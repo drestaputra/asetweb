@@ -187,15 +187,7 @@ class Function_lib {
         else return null;
     }  
 
-    function generate_kode_tutorial(){
-        $kode_tutorial=$this->random_num(6);
-        $cek_kode=$this->get_one('kode_tutorial','tutorial','kode_tutorial="'.$kode_tutorial.'"');
-        if (trim($cek_kode)!="") {
-            $this->generate_kode_tutorial($id_tutorial);
-        }else{
-            return $kode_tutorial;
-        }
-    }
+    
 
     function random_num($size) {
     $alpha_key = '';
@@ -308,14 +300,6 @@ class Function_lib {
             $viewMenu = $lib->CI->load->view('super_admin/left_bar', null, FALSE);
         }else if (!empty($lib->CI->session->userdata('admin'))) {
             $viewMenu = $lib->CI->load->view('admin/left_bar', null, FALSE);        
-        }else if (!empty($lib->CI->session->userdata('owner'))) {
-            $viewMenu = $lib->CI->load->view('owner/left_bar', null, FALSE);        
-        }else if (!empty($lib->CI->session->userdata('kasir'))) {
-            $viewMenu = $lib->CI->load->view('kasir/left_bar', null, FALSE);        
-        }else if (!empty($lib->CI->session->userdata('kolektor'))) {
-            $viewMenu = $lib->CI->load->view('kolektor/left_bar', null, FALSE);        
-        }else{
-            $viewMenu = "";
         }
         return $viewMenu;
     }
@@ -325,14 +309,6 @@ class Function_lib {
             $viewMenu = $lib->CI->load->view('super_admin/header', null, FALSE);
         }else if (!empty($lib->CI->session->userdata('admin'))) {
             $viewMenu = $lib->CI->load->view('admin/header', null, FALSE);        
-        }else if (!empty($lib->CI->session->userdata('owner'))) {
-            $viewMenu = $lib->CI->load->view('owner/header', null, FALSE);        
-        }else if (!empty($lib->CI->session->userdata('kasir'))) {
-            $viewMenu = $lib->CI->load->view('kasir/header', null, FALSE);        
-        }else if (!empty($lib->CI->session->userdata('kolektor'))) {
-            $viewMenu = $lib->CI->load->view('kolektor/header', null, FALSE);        
-        }else{
-            $viewMenu = "";
         }
         return $viewMenu;
     }
@@ -415,27 +391,6 @@ class Function_lib {
                 "level"=>"admin",
                 "username"=>isset($sess['username']) ? $sess['username'] : "",
                 "id_user"=>isset($sess['id_admin']) ? $sess['id_admin'] : "",
-            );
-        }else if (!empty($this->CI->session->userdata('owner'))) {
-            $sess = $this->CI->session->userdata('owner');
-            $user = array(
-                "level"=>"owner",
-                "username"=>isset($sess['username']) ? $sess['username'] : "",
-                "id_user"=>isset($sess['id_owner']) ? $sess['id_owner'] : "",
-            );
-        }else if (!empty($this->CI->session->userdata('kasir'))) {
-            $sess = $this->CI->session->userdata('kasir');
-            $user = array(
-                "level"=>"kasir",
-                "username"=>isset($sess['username']) ? $sess['username'] : "",
-                "id_user"=>isset($sess['id_kasir']) ? $sess['id_kasir'] : "",
-            );
-        }else if (!empty($this->CI->session->userdata('kolektor'))) {
-            $sess = $this->CI->session->userdata('kolektor');
-            $user = array(
-                "level"=>"kolektor",
-                "username"=>isset($sess['username']) ? $sess['username'] : "",
-                "id_user"=>isset($sess['id_kolektor']) ? $sess['id_kolektor'] : "",
             );
         }
         return $user;

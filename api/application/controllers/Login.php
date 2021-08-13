@@ -26,10 +26,9 @@ class Login extends REST_Controller  {
 	function __construct($config = 'rest') {
         parent::__construct($config);
         $this->load->database();        
-
     }
 
-	public function kolektor_post(){
+	public function user_post(){
 		$this->load->library('form_validation');
 		$response=array("status"=>500,"msg"=>"Gagal Login");
 		$post=$this->input->post();
@@ -38,7 +37,7 @@ class Login extends REST_Controller  {
 			$this->form_validation->set_rules('password', 'Password', 'trim|required');
 			if ($this->form_validation->run() == TRUE) {
 				$this->load->model('Mandroid');								
-				$hasil=$this->Mandroid->cek_login_kolektor();
+				$hasil=$this->Mandroid->cek_login_user();
 				if ($hasil['status']==200) {
 					$response["status"]=200;
 					$response["msg"]=$hasil['msg'];
@@ -56,7 +55,6 @@ class Login extends REST_Controller  {
 			$response["msg"]="Terjadi kesalahan jaringan silahkan coba lagi";
 		}
 		$this->response($response);
-		
 	}	
 
 	public function forget_password_post(){				

@@ -23,7 +23,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | a PHP script and you can easily do that on your own.
 |
 */
-$config['base_url'] = 'https://localhost/kodig/';
+$config['base_url'] = 'http://localhost/aset/api/';
 
 /*
 |--------------------------------------------------------------------------
@@ -314,7 +314,7 @@ $config['cache_query_string'] = FALSE;
 | https://codeigniter.com/user_guide/libraries/encryption.html
 |
 */
-$config['encryption_key'] = '4rta!@#kita';
+$config['encryption_key'] = '4s3tt4n4h';
 
 /*
 |--------------------------------------------------------------------------

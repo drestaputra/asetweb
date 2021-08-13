@@ -3,53 +3,25 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Mandroid extends CI_Model {
 
-	function cek_login_kolektor(){		
+	function cek_login_user(){		
 		$username=$this->input->post('username',TRUE);
 		$password=$this->input->post('password',TRUE);
 		$password = hash('sha512',$password . config_item('encryption_key'));        
-		
 		$where="username=".$this->db->escape($username)." AND password=".$this->db->escape($password)." AND status='aktif'";
 		$this->db->where($where);
-		$query=$this->db->get('kolektor');		
+		$query=$this->db->get('user');		
 		$jumlah_cocok=$query->num_rows();
-		$data_kolektor=array();
+		$data_user=array();
 		if ($jumlah_cocok!=0) {
 			$status=200;
 			$msg="Berhasil Login";
-			$data_kolektor=$query->row_array();
+			$data_user=$query->row_array();
 		}else{
 			$status=500;
 			$msg="Username atau password salah";
 		}
-		return array("status"=>$status,"msg"=>$msg,"data"=> $data_kolektor);
+		return array("status"=>$status,"msg"=>$msg,"data"=> $data_user);
 		
-	}
-	
-	function get_akun($id){		
-		$this->db->where('id_agen', $id);
-		$query_agen=$this->db->get('agen');
-		$this->db->where('id_jamaah', $id);
-		$query_jamaah=$this->db->get('jamaah');
-		$cocok_agen=$query_agen->num_rows();
-		$cocok_jamaah=$query_jamaah->num_rows();
-		if ($cocok_agen!=0) {
-			$output=$query_agen->row_array();
-			$output['nama_lengkap']=$output['nama_agen'];
-			$output['id_user']=$output['id_agen'];
-			$output['jenis_user']="agen";
-			$output['foto']=$output['foto_agen'];
-			$output['foto_ktp']=$output['foto_ktp_agen'];
-		} elseif($cocok_jamaah!=0) {
-			$output=$query_jamaah->row_array();
-			$output['nama_lengkap']=$output['nama_jamaah'];
-			$output['id_user']=$output['id_jamaah'];
-			$output['foto']=$output['foto_jamaah'];
-			$output['foto_ktp']=$output['foto_ktp_jamaah'];
-			$output['jenis_user']="jamaah";
-		}else{
-			$output=null;
-		}
-		return $output;
 	}
 	function forget_password(){
 		$this->load->library('form_validation');					
@@ -59,14 +31,14 @@ class Mandroid extends CI_Model {
 		if ($this->form_validation->run() == TRUE) {				
 			$email = $this->input->post('email', TRUE);
 			$email = $this->security->sanitize_filename($email);
-			$cek_email = $this->function_lib->get_one('email','kolektor','status="aktif" AND email='.$this->db->escape($email).'');
+			$cek_email = $this->function_lib->get_one('email','user','status="aktif" AND email='.$this->db->escape($email).'');
 			if (!empty($cek_email)) {
 				$exp_datetime = date("Y-m-d H:i:s",strtotime('+10 hours'));
 				$jam_sekarang = date("Y-m-d H:i:s",strtotime($exp_datetime));
 				$menit_lalu = date("Y-m-d H:i:s",strtotime('+590 minutes'));
 				// BETWEEN '2016-01-23 00:00:00' AND '2016-01-24 00:00:00'
 				// cek hitung batasan limit request forget password range 10 menit, limit 5 request
-				$jumlah_request = $this->function_lib->get_one('count(id_forget_password)','forget_password','email='.$this->db->escape($email).' AND jenis_user="kolektor" AND exp_datetime BETWEEN '.$this->db->escape($menit_lalu).' AND '.$this->db->escape($jam_sekarang).'');					
+				$jumlah_request = $this->function_lib->get_one('count(id_forget_password)','forget_password','email='.$this->db->escape($email).' AND jenis_user="user" AND exp_datetime BETWEEN '.$this->db->escape($menit_lalu).' AND '.$this->db->escape($jam_sekarang).'');					
 				if (intval($jumlah_request)<5) {
 					$this->insertKode($email);
 					$data['status']=200;									
@@ -86,17 +58,17 @@ class Mandroid extends CI_Model {
 		return $data;					
 	}
 	function insertKode($email){
-		$id_user = $this->function_lib->get_one('id_kolektor','kolektor','email='.$this->db->escape($email).'');
+		$id_user = $this->function_lib->get_one('id_user','user','email='.$this->db->escape($email).'');
 		$configKey = "3mai1f0rg3t";
 		$exp_datetime = date("Y-m-d H:i:s",strtotime('+10 hours'));
 		$token = hash('sha512', $email . $configKey . $exp_datetime);
 		$this->db->set('is_active','0');
 		$this->db->where('email', $email);
-		$this->db->where('jenis_user', "kolektor");
+		$this->db->where('jenis_user', "user");
 		$this->db->update('forget_password');
 		$columnInsert = array(
 			"email" => $email,
-			"jenis_user" => "kolektor",
+			"jenis_user" => "user",
 			"id_user" => $id_user,
 			"token" => $token,
 			"exp_datetime" => $exp_datetime
@@ -159,13 +131,13 @@ class Mandroid extends CI_Model {
                 'min_length'	=> '%s minimal 1 karakter'            
         	)
 		);
-		$this->form_validation->set_rules('email', 'Email', 'trim|required|is_unique[kolektor.email]',
+		$this->form_validation->set_rules('email', 'Email', 'trim|required|is_unique[user.email]',
 			array(
                 'required'      => '%s masih kosong',
                 'is_unique'     => '%s sudah terdaftar.'
         	)
 		);
-		$this->form_validation->set_rules('username', 'Username', 'trim|required|min_length[3]|max_length[20]|is_unique[kolektor.username]',
+		$this->form_validation->set_rules('username', 'Username', 'trim|required|min_length[3]|max_length[20]|is_unique[user.username]',
 			array(
                 'required'      => '%s masih kosong',        
                 'max_length'	=> '%s maksimal 20 karakter',
@@ -190,18 +162,18 @@ class Mandroid extends CI_Model {
 		return array("status"=>$status,"msg"=>$msg);
 	}
 	function daftar(){
-		$data_kolektor=null;
+		$data_user=null;
 		 $validasi=$this->validasi_daftar();
 		 if ($validasi['status']==200) {
 		 	$post=$this->input->post();
 		 	$post['password']=sha1($post['password']);
-		 	$this->db->insert('kolektor', $post);
-		 	$id_kolektor=$this->db->insert_id();
-		 	if (trim($id_kolektor)) {		 		
-		 		$data_kolektor=$this->function_lib->get_row('kolektor','id_kolektor="'.$id_kolektor.'"');
+		 	$this->db->insert('user', $post);
+		 	$id_user=$this->db->insert_id();
+		 	if (trim($id_user)) {		 		
+		 		$data_user=$this->function_lib->get_row('user','id_user="'.$id_user.'"');
 		 	}
 		 }
-		 return array("status"=>$validasi['status'],"msg"=>$validasi['msg'],"data"=>$data_kolektor);
+		 return array("status"=>$validasi['status'],"msg"=>$validasi['msg'],"data"=>$data_user);
 	}
 
 }
