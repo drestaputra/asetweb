@@ -21,7 +21,7 @@ class Slider extends Rest_Controller {
         $params = isset($_POST) ? $_POST : array();
         $start = (int)$this->input->post('page');
         
-        $additional_where= "";
+        $additional_where= "AND is_active = '1'";
         
         $query_arr= $this->Mslider->data_slider($params,$custom_select='',$count=false,$additional_where);        
         $query = $query_arr['query'];

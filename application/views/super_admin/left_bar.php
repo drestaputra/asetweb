@@ -40,18 +40,18 @@
 											<span>Laporan</span>
 										</a>
 									</li>
-									<li <?php if (isset($url1) AND trim($url1)!="" AND $url1=="rekening"): ?>
+									<li <?php if (isset($url1) AND trim($url1)!="" AND $url1=="aset"): ?>
 										 class="nav-active"
 									<?php endif ?>>
-										<a href="<?php echo base_url('rekening/index'); ?>">
+										<a href="<?php echo base_url('aset/index'); ?>">
 											<i class="fa fa-map-marker" aria-hidden="true"></i>
 											<span>Aset Tanah</span>
 										</a>
 									</li>	
-									<li <?php if (isset($url1) AND trim($url1)!="" AND $url1=="informasi_program"): ?>
+									<li <?php if (isset($url1) AND trim($url1)!="" AND $url1=="berita"): ?>
 										 class="nav-active"
 									<?php endif ?>>
-										<a href="<?php echo base_url('informasi_program/index'); ?>">
+										<a href="<?php echo base_url('berita/index'); ?>">
 											<i class="fa fa-newspaper-o" aria-hidden="true"></i>
 											<span>Artikel</span>
 										</a>

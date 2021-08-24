@@ -17,18 +17,19 @@ class AUTHORIZATION
         $CI =& get_instance();
         return JWT::decode($token, $CI->config->item('jwt_key'));
     }
-    public static function validateTokenKolektor($token)
+    public static function validateTokenUser($token)
     {
         $CI =& get_instance();
         $decoded = JWT::decode($token, $CI->config->item('jwt_key'), array('HS256'));
-        $decoded = (array) $decoded;           
+        
+        $decoded = (array) $decoded;         
         $is_valid = false;
-        $id_kolektor = (isset($decoded['id_kolektor']) AND !empty($decoded['id_kolektor'])) ? $decoded['id_kolektor'] : "0";
+        $id_user = (isset($decoded['id_user']) AND !empty($decoded['id_user'])) ? $decoded['id_user'] : "0";
         $username = (isset($decoded['username']) AND !empty($decoded['username'])) ? $decoded['username'] : "0";
         $token_expired = (isset($decoded['token_expired']) AND !empty($decoded['token_expired'])) ? $decoded['token_expired'] : "0";
         $password = (isset($decoded['password']) AND !empty($decoded['password'])) ? $decoded['password'] : "0";
         $password = hash('sha512',$password . config_item('encryption_key'));        
-        $valid = $CI->function_lib->get_one('id_kolektor','kolektor','username="'.$username.'" AND password="'.$password.'"');        
+        $valid = $CI->function_lib->get_one('id_user','user','username="'.$username.'" AND password="'.$password.'"');        
         if (!empty($valid)) {
              $is_valid = true;
         } else{
@@ -76,7 +77,7 @@ class AUTHORIZATION
             $CI->response($response, $status);
         }
     }
-    public static function get_id_kolektor()
+    public static function get_id_user()
     {
 
         $CI =& get_instance();
@@ -91,12 +92,12 @@ class AUTHORIZATION
         $token = $headers['Authorization'];
         $decoded = JWT::decode($token, $CI->config->item('jwt_key'), array('HS256'));
         $decodedArr = (array) $decoded;   
-        $id_kolektor = (isset($decodedArr['id_kolektor']) AND !empty($decodedArr['id_kolektor'])) ? $decodedArr['id_kolektor'] : "0";
+        $id_user = (isset($decodedArr['id_user']) AND !empty($decodedArr['id_user'])) ? $decodedArr['id_user'] : "0";
         $username = (isset($decodedArr['username']) AND !empty($decodedArr['username'])) ? $decodedArr['username'] : "";
         $password = (isset($decodedArr['password']) AND !empty($decodedArr['password'])) ? $decodedArr['password'] : "";
         $password = hash('sha512',$password . config_item('encryption_key'));        
-        $id_kolektor = $CI->function_lib->get_one('id_kolektor','kolektor','username="'.$username.'" AND password="'.$password.'" AND status="aktif"');
-        return $id_kolektor;
+        $id_user = $CI->function_lib->get_one('id_user','user','username="'.$username.'" AND password="'.$password.'" AND status="aktif"');
+        return $id_user;
     }
     public static function check_token()
     {
@@ -116,7 +117,7 @@ class AUTHORIZATION
         try {
             // Validate the token
             // Successfull validation will return the decoded user data else returns false
-            $data = AUTHORIZATION::validateTokenKolektor($token);
+            $data = AUTHORIZATION::validateTokenUser($token);
             if ($data === false) {
                 $status = 401;
                 $response = ['status' => $status, 'msg' => 'Unauthorized Access!'];

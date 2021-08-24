@@ -15,16 +15,16 @@ class Akun extends REST_Controller {
     }
     
 	public function profil_post(){	
-		$id_kolektor = AUTHORIZATION::get_id_kolektor();
+		$id_user = AUTHORIZATION::get_id_user();
 		$status = 500;
 		$msg = "Akun tidak ditemukan";
 		$data = array();
-		if (trim($id_kolektor)!="") {
-			$data_kolektor = $this->function_lib->get_row('kolektor','id_kolektor="'.$id_kolektor.'"');
+		if (trim($id_user)!="") {
+			$data_user = $this->function_lib->get_row('user','id_user="'.$id_user.'"');
 			$status = 200;
 			$msg = "Sukses";
 		}
-		$response = array("status"=>$status,"msg"=>$msg,"data"=>$data_kolektor);
+		$response = array("status"=>$status,"msg"=>$msg,"data"=>$data_user);
 		$this->response($response);
 	}
 }
