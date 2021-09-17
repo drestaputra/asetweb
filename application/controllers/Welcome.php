@@ -37,7 +37,7 @@ class Welcome extends CI_Controller {
 		}else if($level == "admin"){
 			redirect('admin/dashboard','refresh');			
 		}else{
-			redirect('admin/login','refresh');
+			redirect('super_admin/login','refresh');
 		}
 	}
 }

@@ -20,7 +20,7 @@ class Daftar extends REST_Controller {
         }
     }
 
-	public function kolektor_post()
+	public function user_post()
 	{
 		$post=$this->input->post();
 		if ($post) {

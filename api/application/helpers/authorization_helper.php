@@ -29,7 +29,7 @@ class AUTHORIZATION
         $token_expired = (isset($decoded['token_expired']) AND !empty($decoded['token_expired'])) ? $decoded['token_expired'] : "0";
         $password = (isset($decoded['password']) AND !empty($decoded['password'])) ? $decoded['password'] : "0";
         $password = hash('sha512',$password . config_item('encryption_key'));        
-        $valid = $CI->function_lib->get_one('id_user','user','username="'.$username.'" AND password="'.$password.'"');        
+        $valid = $CI->function_lib->get_one('id_user','user','username='.$CI->db->escape($username).' AND password='.$CI->db->escape($password).' AND status="aktif"');        
         if (!empty($valid)) {
              $is_valid = true;
         } else{

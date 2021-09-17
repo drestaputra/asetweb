@@ -7,15 +7,24 @@ class Mandroid extends CI_Model {
 		$username=$this->input->post('username',TRUE);
 		$password=$this->input->post('password',TRUE);
 		$password = hash('sha512',$password . config_item('encryption_key'));        
-		$where="username=".$this->db->escape($username)." AND password=".$this->db->escape($password)." AND status='aktif'";
+		$where="username=".$this->db->escape($username)." AND password=".$this->db->escape($password);
 		$this->db->where($where);
 		$query=$this->db->get('user');		
 		$jumlah_cocok=$query->num_rows();
 		$data_user=array();
+		
 		if ($jumlah_cocok!=0) {
-			$status=200;
-			$msg="Berhasil Login";
-			$data_user=$query->row_array();
+			$where_active = "username=".$this->db->escape($username)." AND password=".$this->db->escape($password)." AND status='aktif'";
+			$cekAktif = $this->function_lib->get_one('id_user','user', $where_active);
+			if (!empty($cekAktif)) {
+				$status=200;
+				$msg="Berhasil Login";
+				$data_user=$query->row_array();
+			}else{
+				$status=500;
+				$msg="User Anda belum aktif silahkan hubungi admin untuk meminta diaktifkan";
+			}
+
 		}else{
 			$status=500;
 			$msg="Username atau password salah";
@@ -123,20 +132,6 @@ class Mandroid extends CI_Model {
 
         	)
 		);
-		$this->load->library('form_validation');
-		$this->form_validation->set_rules('alamat', 'Alamat', 'trim|required|min_length[1]|max_length[300]',
-			 array(
-                'required'      => '%s masih kosong',    
-                'max_length'	=> '%s maksimal 300 karakter',
-                'min_length'	=> '%s minimal 1 karakter'            
-        	)
-		);
-		$this->form_validation->set_rules('email', 'Email', 'trim|required|is_unique[user.email]',
-			array(
-                'required'      => '%s masih kosong',
-                'is_unique'     => '%s sudah terdaftar.'
-        	)
-		);
 		$this->form_validation->set_rules('username', 'Username', 'trim|required|min_length[3]|max_length[20]|is_unique[user.username]',
 			array(
                 'required'      => '%s masih kosong',        
@@ -166,8 +161,14 @@ class Mandroid extends CI_Model {
 		 $validasi=$this->validasi_daftar();
 		 if ($validasi['status']==200) {
 		 	$post=$this->input->post();
-		 	$post['password']=sha1($post['password']);
-		 	$this->db->insert('user', $post);
+		 	$post['password'] = hash('sha512',$post['password'] . config_item('encryption_key'));    
+		 	$dataInsert = array(
+		 		"username" => $post['username'],
+		 		"password" => $post['password'],
+		 		"instansi" => (isset($post['instansi']) && !empty($post['instansi']) )? $post['instansi'] : "",
+		 		"nama_lengkap" => $post['nama_lengkap']
+		 	);
+		 	$this->db->insert('user', $dataInsert);
 		 	$id_user=$this->db->insert_id();
 		 	if (trim($id_user)) {		 		
 		 		$data_user=$this->function_lib->get_row('user','id_user="'.$id_user.'"');

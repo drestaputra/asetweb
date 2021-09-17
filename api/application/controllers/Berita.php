@@ -14,7 +14,7 @@ class Berita extends Rest_Controller {
         parent::__construct($config);
         $this->load->database();
         $this->load->model('Mberita');
-        // AUTHORIZATION::check_token();
+        AUTHORIZATION::check_token();
     }
    
     public function data_berita_post(){
@@ -22,7 +22,7 @@ class Berita extends Rest_Controller {
 
         $params = isset($_POST) ? $_POST : array();
         $start = (int)$this->input->post('page');
-        $additional_where= ' AND status="aktif"';                
+        $additional_where= ' AND status_berita="aktif"';                
         
         $query_arr= $this->Mberita->data_berita($params,$custom_select='',$count=false,$additional_where);        
         $query = $query_arr['query'];

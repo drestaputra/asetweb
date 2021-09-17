@@ -5,8 +5,8 @@
     <!-- Basic -->
     <meta charset="UTF-8">
 
-    <title>Dashboard Admin | <?php echo function_lib::get_config_value('website_name'); ?></title>
-    <meta name="keywords" content="Dashboard Admin - <?php echo function_lib::get_config_value('website_name'); ?>" />
+    <title>Pengaturan Admin | <?php echo function_lib::get_config_value('website_name'); ?></title>
+    <meta name="keywords" content="Pengaturan Admin - <?php echo function_lib::get_config_value('website_name'); ?>" />
     <meta name="description" content="<?php echo function_lib::get_config_value('website_seo'); ?>">
     <meta name="author" content="okler.net">
 
@@ -52,7 +52,7 @@
 
             <section role="main" class="content-body">
                 <header class="page-header">
-                    <h2>Dashboard</h2>
+                    <h2>Pengaturan</h2>
                     
                     <div class="right-wrapper pull-right">
                         <ol class="breadcrumbs">
@@ -61,7 +61,7 @@
                                     <i class="fa fa-home"></i>
                                 </a>
                             </li>
-                            <li><span>Dashboard</span></li>
+                            <li><span>Pengaturan</span></li>
                         </ol>
 
                         <a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fa fa-chevron-left"></i></a>
@@ -165,6 +165,20 @@
                                         <label class="col-sm-2 control-label">Alamat<span class="required">*</span></label>
                                         <div class="col-sm-10">
                                             <textarea class="form-control" name="app_contact_address"><?php echo ($this->input->post('app_contact_address')!="")?$this->input->post('app_contact_address'):$app_contact_address; ?></textarea>
+                                        </div>                                            
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">Tampilkan Data Aset ? <span class="required">*</span></label>
+                                        <div class="col-sm-10">
+                                            
+                                            <select class="form-control" name="app_is_aset_show">
+                                                <option value="1" <?php if (isset($app_is_aset_show) && !empty($app_is_aset_show) && ($app_is_aset_show=="1")): ?>
+                                                    selected
+                                                <?php endif ?>>Tampilkan</option>
+                                                <option value="0" <?php if (isset($app_is_aset_show) && ($app_is_aset_show=="0")): ?>
+                                                    selected
+                                                <?php endif ?>>Sembunyikan</option>
+                                            </select>
                                         </div>                                            
                                     </div>
                                 </div>

@@ -35,6 +35,11 @@ class Aset extends REST_Controller {
         }else{$totalPage=0;}                 
         foreach ($response as $key => $value) {
             $response[$key]['foto_aset'] = $this->Mfoto_aset->getFotoAset($value['id_aset']);
+            $response[$key]['tanggal_sertifikat'] = date("d-m-Y", strtotime($response[$key]['tanggal_sertifikat']));
+            $response[$key]['harga_perolehan'] = "Rp. ".number_format($response[$key]['harga_perolehan'],0,'.','.');
+            $response[$key]['luas_tanah'] = number_format($response[$key]['luas_tanah'],0,'.','.');
+            $response[$key]['latitude'] = empty($response[$key]['latitude']) ? "0" : $response[$key]['latitude'];
+            $response[$key]['longitude'] = empty($response[$key]['longitude']) ? "0" : $response[$key]['longitude'];
         }      
         $json_data = array('status'=>$status,'msg'=>$msg,'page' => $start,'totalPage'=>$totalPage, 'recordsFiltered' => ((int)$this->input->post('perPage')>0)?$this->input->post('perPage'):$total, 'totalRecords' => $total, 'data' => $response);
        
@@ -56,6 +61,9 @@ class Aset extends REST_Controller {
             // $data['deskripsi_informasi_program'] = isset($data['deskripsi_informasi_program']) ?  html_entity_decode($data['deskripsi_informasi_program']) : "";
             // $data['foto_aset'] = isset($data['foto_informasi_program']) ? base_url('assets/foto_informasi_program/').$data['foto_informasi_program'] : "";
             $data['foto_aset'] = $this->Mfoto_aset->getFotoAset($data['id_aset']);
+            $data['tanggal_sertifikat'] = date("d-m-Y", strtotime($data['tanggal_sertifikat']));
+            $data['harga_perolehan'] = "Rp. ".number_format($data['harga_perolehan'],0,'.','.');
+            $data['luas_tanah'] = number_format($data['luas_tanah'],0,'.','.');
         }
         $this->response(array("status"=>$status,"msg"=>$msg,"data"=>$data));    
     }  

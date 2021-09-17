@@ -4,7 +4,7 @@
 				
 					<div class="sidebar-header">
 						<div class="sidebar-title">
-							Navigation
+							Menu
 						</div>
 						<div class="sidebar-toggle hidden-xs" data-toggle-class="sidebar-left-collapsed" data-target="html" data-fire-event="sidebar-left-toggle">
 							<i class="fa fa-bars" aria-label="Toggle sidebar"></i>
@@ -15,7 +15,7 @@
 						<div class="nano-content">
 							<nav id="menu" class="nav-main" role="navigation">
 								<ul class="nav nav-main">
-									<li <?php if (isset($cont) AND trim($cont)!="" AND $cont=="dashboard"): ?>
+									<li <?php if (isset($cont) AND trim($cont) == "dashboard"): ?>
 										 class="nav-active"
 									<?php endif ?>>
 										<a href="<?php echo base_url('super_admin/dashboard'); ?>">
@@ -24,20 +24,48 @@
 										</a>
 									</li>
 									<!-- user menu -->
-									<li <?php if (isset($url1) AND trim($url1)!="" AND $url1=="admin"): ?>
-										 class="nav-active"
-									<?php endif ?>>
-										<a href="<?php echo base_url('admin/index'); ?>">
+									<li class="nav-parent <?php if (!empty($url1) AND (trim($url1) == 'user' OR trim($url1) == "koordinator" OR trim($url1) == "pengurus_barang")): ?>nav-expanded nav-active<?php endif ?>">
+										<a>
 											<i class="fa fa-users" aria-hidden="true"></i>
-											<span>Admin</span>
+											<span>User</span>
 										</a>
+										<ul class="nav nav-children">
+											
+											<li <?php if (isset($url1) AND trim($url1)!="" AND $url1=="user"): ?>
+												 class="nav-active"
+											<?php endif ?>>
+												<a href="<?php echo base_url('user/user/index'); ?>">
+													<i class="fa fa-users" aria-hidden="true"></i>
+													<span>Android</span>
+												</a>
+											</li>
+											<li <?php if (isset($url1) AND trim($url1)!="" AND $url1=="koordinator"): ?>
+										 	class="nav-active"
+											<?php endif ?>>
+												<a href="<?php echo base_url('koordinator/index'); ?>">
+													<i class="fa fa-users" aria-hidden="true"></i>
+													<span>Koordinator</span>
+												</a>
+											</li>
+											<li <?php if (isset($url1) AND trim($url1)!="" AND $url1=="pengurus_barang"): ?>
+										 	class="nav-active"
+											<?php endif ?>>
+												<a href="<?php echo base_url('pengurus_barang/index'); ?>">
+													<i class="fa fa-users" aria-hidden="true"></i>
+													<span>Pengurus Barang</span>
+												</a>
+											</li>
+											
+										</ul>
 									</li>
-									<li <?php if (isset($url1) AND trim($url1)!="" AND $url1=="laporan"): ?>
+								
+									
+									<li <?php if (isset($url1) AND trim($url1)!="" AND $url1=="opd"): ?>
 										 class="nav-active"
 									<?php endif ?>>
-										<a href="<?php echo base_url('laporan/index'); ?>">
-											<i class="fa fa-file-excel-o" aria-hidden="true"></i>
-											<span>Laporan</span>
+										<a href="<?php echo base_url('opd/index'); ?>">
+											<i class="fa fa-users" aria-hidden="true"></i>
+											<span>OPD</span>
 										</a>
 									</li>
 									<li <?php if (isset($url1) AND trim($url1)!="" AND $url1=="aset"): ?>
@@ -54,14 +82,6 @@
 										<a href="<?php echo base_url('berita/index'); ?>">
 											<i class="fa fa-newspaper-o" aria-hidden="true"></i>
 											<span>Artikel</span>
-										</a>
-									</li>	
-									<li <?php if (isset($url1) AND trim($url1)!="" AND $url1=="kontak"): ?>
-										 class="nav-active"
-									<?php endif ?>>
-										<a href="<?php echo base_url('kontak/index'); ?>">
-											<i class="fa fa-phone" aria-hidden="true"></i>
-											<span>Kontak</span>
 										</a>
 									</li>	
 									<li <?php if (isset($url1) AND trim($url1)!="" AND $url1=="slider"): ?>

@@ -13,6 +13,7 @@ class Berkas extends CI_Controller {
  
     public function index() {
         $this->load->config('grocery_crud');
+        $this->config->set_item('grocery_crud_file_upload_max_file_size', "50MB");
         $this->config->set_item('grocery_crud_xss_clean', false);
         $crud = new Ajax_grocery_CRUD();
 
@@ -22,7 +23,7 @@ class Berkas extends CI_Controller {
 
         $crud->set_theme('adminlte');
         $crud->set_table('berkas');        
-        $crud->set_subject('Data Informasi Program');
+        $crud->set_subject('Data Berkas');
         $crud->set_language('indonesian');
 
        
@@ -31,12 +32,12 @@ class Berkas extends CI_Controller {
         $crud->display_as('nama_berkas','Nama Berkas')
              ->display_as('deskripsi_berkas','Deskripsi')
              ->display_as('berkas','berkas')             
-             ->display_as('status','STATUS') ;                                      
+             ->display_as('status_berkas','STATUS') ;                                      
 
         $crud->change_field_type('is_notif', 'dropdown', array('0' => 'Tidak','1' => 'Ya'));
         $crud->set_field_upload('berkas','api/assets/berkas');        
                
-        $crud->required_fields('nama_berkas','berkas','status');                
+        $crud->required_fields('nama_berkas','berkas','status_berkas');                
         $crud->callback_delete(array($this,'delete_data'));
         $data = $crud->render();
         $data->id_user = $id_user;
