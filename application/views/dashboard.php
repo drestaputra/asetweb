@@ -64,7 +64,7 @@
 								<li><span>Dashboard</span></li>
 							</ol>
 					
-							<a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fa fa-chevron-left"></i></a>
+							<a class="sidebar-right-toggle" ><i class="fa fa-chevron-left"></i></a>
 						</div>
 					</header>
 

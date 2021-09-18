@@ -24,14 +24,21 @@
 										</a>
 									</li>
 									<!-- user menu -->
-									<li class="nav-parent <?php if (!empty($url1) AND (trim($url1) == 'user' OR trim($url1) == "koordinator" OR trim($url1) == "pengurus_barang")): ?>nav-expanded nav-active<?php endif ?>">
+									<li class="nav-parent <?php if (!empty($url1) AND (trim($url1) == 'user' OR trim($url1) == "koordinator" OR trim($url1) == "pengurus_barang" OR trim($url1) == "admin")): ?>nav-expanded nav-active<?php endif ?>">
 										<a>
 											<i class="fa fa-users" aria-hidden="true"></i>
 											<span>User</span>
 										</a>
 										<ul class="nav nav-children">
-											
-											<li <?php if (isset($url1) AND trim($url1)!="" AND $url1=="user"): ?>
+											<li <?php if (isset($cont) AND trim($cont)!="" AND $cont=="admin"): ?>
+												 class="nav-active"
+											<?php endif ?>>
+												<a href="<?php echo base_url('user/admin/index'); ?>">
+													<i class="fa fa-users" aria-hidden="true"></i>
+													<span>Admin</span>
+												</a>
+											</li>
+											<li <?php if (isset($cont) AND trim($cont)!="" AND $cont=="user"): ?>
 												 class="nav-active"
 											<?php endif ?>>
 												<a href="<?php echo base_url('user/user/index'); ?>">
@@ -39,18 +46,18 @@
 													<span>Android</span>
 												</a>
 											</li>
-											<li <?php if (isset($url1) AND trim($url1)!="" AND $url1=="koordinator"): ?>
+											<li <?php if (isset($cont) AND trim($cont)!="" AND $cont=="koordinator"): ?>
 										 	class="nav-active"
 											<?php endif ?>>
-												<a href="<?php echo base_url('koordinator/index'); ?>">
+												<a href="<?php echo base_url('user/koordinator/index'); ?>">
 													<i class="fa fa-users" aria-hidden="true"></i>
 													<span>Koordinator</span>
 												</a>
 											</li>
-											<li <?php if (isset($url1) AND trim($url1)!="" AND $url1=="pengurus_barang"): ?>
+											<li <?php if (isset($cont) AND trim($cont)!="" AND $cont=="pengurus_barang"): ?>
 										 	class="nav-active"
 											<?php endif ?>>
-												<a href="<?php echo base_url('pengurus_barang/index'); ?>">
+												<a href="<?php echo base_url('user/pengurus_barang/index'); ?>">
 													<i class="fa fa-users" aria-hidden="true"></i>
 													<span>Pengurus Barang</span>
 												</a>
@@ -64,7 +71,7 @@
 										 class="nav-active"
 									<?php endif ?>>
 										<a href="<?php echo base_url('opd/index'); ?>">
-											<i class="fa fa-users" aria-hidden="true"></i>
+											<i class="fa fa-building-o" aria-hidden="true"></i>
 											<span>OPD</span>
 										</a>
 									</li>

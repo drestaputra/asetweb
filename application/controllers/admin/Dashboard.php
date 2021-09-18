@@ -11,14 +11,6 @@ class Dashboard extends CI_Controller {
 	{
 		$this->function_lib->cek_auth(array('admin'));		
 		$data = array();
-		$data['nasabah_hari_ini'] = $this->function_lib->get_one('count(id_nasabah)','nasabah','date(tgl_bergabung)='.$this->db->escape(date("Y-m-d")).'');
-		$data['nasabah_bulan_ini'] = $this->function_lib->get_one('count(id_nasabah)','nasabah','YEAR(tgl_bergabung)="'.date("Y").'" AND month(tgl_bergabung)='.$this->db->escape(date("m")).'');
-		$data['nasabah_tahun_ini'] = $this->function_lib->get_one('count(id_nasabah)','nasabah','year(tgl_bergabung)='.$this->db->escape(date("Y")).'');
-		$data['angsuran_pinjaman_today'] = $this->function_lib->get_one('sum(jumlah_riwayat_pembayaran)','riwayat_pinjaman','DATE(tgl_riwayat_pinjaman)='.$this->db->escape(date("Y-m-d")).'');
-		$data['angsuran_simpanan_today'] = $this->function_lib->get_one('sum(jumlah_riwayat_simpanan)','riwayat_simpanan','DATE(tgl_riwayat_simpanan)='.$this->db->escape(date("Y-m-d")).'');
-		$data['angsuran_simpanan'] = $this->function_lib->get_one('sum(jumlah_riwayat_simpanan)','riwayat_simpanan','month(tgl_riwayat_simpanan)="'.date("m").'" AND YEAR(tgl_riwayat_simpanan)="'.date("Y").'"');
-		$data['angsuran_pinjaman'] = $this->function_lib->get_one('sum(jumlah_riwayat_pembayaran)','riwayat_pinjaman','month(tgl_riwayat_pinjaman)="'.date("m").'" AND YEAR(tgl_riwayat_pinjaman)="'.date("Y").'"');
-		$data['koperasiArr'] = $this->function_lib->get_all('id_owner,nama_koperasi','owner','status="aktif"','nama_koperasi ASC');				
 		$this->load->view('admin/dashboard/index',$data,false);	
 	}
 	public function get_grafik_user(){

@@ -1,11 +1,12 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Admin extends CI_Controller {
+class admin extends CI_Controller {
 
 	public function __construct()
 	{
 		parent::__construct();
+		$this->load->library(array('grocery_CRUD','ajax_grocery_crud'));   
 		
 	}
 	public function login()
@@ -29,7 +30,7 @@ class Admin extends CI_Controller {
 		$this->load->model('Madmin');
 		$status = 500;
 		$msg = "";
-		if (!empty($this->session->userdata('super_admin'))) {
+		if (!empty($this->session->userdata('admin'))) {
 			$status = 500;
 			$msg = "Anda sudah login";
 		}		
@@ -50,8 +51,11 @@ class Admin extends CI_Controller {
 	}
 	public function profil(){
 		$this->load->model('Madmin');
-		$this->function_lib->cek_auth(array('admin'));		
-		$idAdmin = $this->session->userdata('admin')['id_admin'];                
+		if (empty($this->session->userdata('admin'))) {
+			redirect(base_url('admin/login'));
+			exit();
+		}
+		$idadmin = $this->session->userdata('admin')['id_admin'];                
 		if ($this->input->post('edit')) {
 			$response = $this->Madmin->editProfil();
 			if (!empty($response)) {
@@ -61,13 +65,24 @@ class Admin extends CI_Controller {
 			}else{
 				redirect('user/admin/profil');
 			}
+		}else if($this->input->post('change_password')){
+			$response = $this->Madmin->changePassword($idadmin);
+			if (!empty($response)) {
+				$status = $response['status'];
+				$msg = $response['msg'];
+				redirect('user/admin/profil?status='.$status.'&msg='.base64_encode($msg).'');
+			}else{
+				redirect('user/admin/profil');
+			}
 		}
-		$data['profil'] = $this->function_lib->get_row('admin','id_admin="'.$idAdmin.'"');
+		$data['profil'] = $this->function_lib->get_row('admin','id_admin="'.$idadmin.'"');
 		$this->load->view('user/admin/profil',$data,FALSE);
 	}
 	/*report data admin, hanya boleh diakses {super} admin*/
 	public function getData(){
-		$this->function_lib->cek_auth(array('super_admin'));		
+		if (empty($this->session->userdata('admin'))) {
+			redirect('admin/login?status=500?msg='.base64_encode("fitur hanya bisa diakses oleh admin"));
+		}
 		$this->load->model('Madmin');
 		$data = $this->Madmin->getData();
 		$query = $data['query'];
@@ -101,15 +116,53 @@ class Admin extends CI_Controller {
 		}
 		echo json_encode($json_data);
 	}
-	public function index(){		
-		$this->function_lib->cek_auth(array('super_admin'));
-		$this->load->view('user/admin/index');
-	}
+	public function index() {
+		$this->function_lib->cek_auth(array("super_admin"));
+        $crud = new Ajax_grocery_CRUD();
+        $user_sess = $this->function_lib->get_user_level();
+        $level = isset($user_sess['level']) ? $user_sess['level'] : "";
+        $id_user = isset($user_sess['id_user']) ? $user_sess['id_user'] : "";
+
+        $crud->set_theme('adminlte');
+        $crud->set_table('admin');
+        $crud->set_subject('Data Admin');
+        $crud->set_language('indonesian');
+        $crud->set_relation('id_opd_admin','opd','label_opd');
+        $crud->columns('id_opd_admin', 'Ubah Password','username','email','status');                 
+	    
+        $crud->order_by('id_admin','DESC');
+        $action = $this->uri->segment(4,0);
+        
+        $crud->display_as('id_opd_admin','OPD')
+             ->display_as('username','Username')
+             ->display_as('email','Email')
+             ->display_as('status','STATUS') ;                                      
+
+        $crud->change_field_type('password', 'password');
+        $crud->unique_fields(['username','email']);        
+
+        $crud->callback_column('Ubah Password', array($this, 'link_ubah_password'));        
+        $crud->required_fields('id_opd_admin','username','password','email','status');
+        $crud->callback_after_insert(array($this, 'cpass'));
+        $crud->unset_edit_fields('password');
+        $crud->unset_add_fields('status');
+        $data = $crud->render();
+
+        
+ 
+        $this->load->view('admin/index', $data, FALSE);
+    }
+    public function link_ubah_password($value, $row){
+        return '<a href="'.base_url("user/admin/ubah_password/".$row->id_admin).'" class="btn btn-info btn-sm"><i class="fa fa-key"></i></a>';
+    }
 	public function delete($id_admin){
+		$this->function_lib->cek_auth(array('super_admin'));
 		$this->load->model('Madmin');
 		$status = 500;
 		$msg = "Gagal";
-		$this->function_lib->cek_auth(array('super_admin'));
+		if (empty($this->session->userdata('admin'))) {
+			echo json_encode(array("status"=>$status,"msg"=>"Akses ditolak"));
+		}
 		header("Content-type:application/json");
 		$cek = $this->function_lib->get_one('id_admin','admin','id_admin="'.$id_admin.'"');
 		if (trim($cek)!="") {		
@@ -124,81 +177,84 @@ class Admin extends CI_Controller {
 		echo json_encode(array("status"=>$status,"msg"=>$msg));
 	}
 	public function edit($id_admin){
-		$this->function_lib->cek_auth(array('super_admin'));
-		$cek = $this->function_lib->get_one('id_admin','admin','id_admin="'.$id_admin.'"');
-		if (trim($cek)=="") {
-			redirect(base_url().'user/admin?status=500&msg='.base64_encode("Data admin tidak ditemukan"));
+		if (empty($this->session->userdata('admin'))) {
+			redirect('admin/login?status=500?msg='.base64_encode("fitur hanya bisa diakses oleh admin"));
 		}
 		$this->load->model('Madmin');
-		$data['id_admin'] = $id_admin;
 		if ($this->input->post('edit')) {
-			$validasi = $this->Madmin->validasi($id_admin);	
-			$status = isset($validasi['status']) ? $validasi['status'] : 500;
-			$msg = isset($validasi['msg']) ? $validasi['msg'] : "";
-			if ($status == 200) {
+			$cek = $this->function_lib->get_one('id_admin','admin','id_admin="'.$id_admin.'"');
+			if (trim($cek)!="") {		
 				$response = $this->Madmin->edit($id_admin);
 				$status = $response['status'];
 				$msg = $response['msg'];
-				$error = isset($validasi['error']) ? $validasi['error'] : array();
-				header('Content-Type: application/json');			
-				echo json_encode(array("status"=>$status,"msg"=>$msg,"error"=>$error));
-				exit();		
+				
 			}else{
 				$status = 500;
-				$msg = $validasi['msg'];
-				$error = isset($validasi['error']) ? $validasi['error'] : array();
-				header('Content-Type: application/json');			
-				echo json_encode(array("status"=>$status,"msg"=>$msg,"error"=>$error));
-				exit();		
+				$msg = "Data tidak ditemukan";
 			}		
+			redirect(base_url().'user/admin?status='.$status.'&msg='.base64_encode($msg));
 		}
 		$data['admin'] = $this->function_lib->get_row('admin','id_admin="'.$id_admin.'"');
 		$this->load->view('user/admin/edit', $data, FALSE);
 	}
-	public function change_password($id_admin){
+	public function cpass($post_array,$primary_key){
 		$this->function_lib->cek_auth(array('super_admin'));
-		if($this->input->post('change_password')){
-			$this->load->model('Madmin');
-			$validasiChangePassword = $this->Madmin->changePassword($id_admin);	
-			header('Content-Type: application/json');						
-			$status = isset($validasiChangePassword['status']) ? $validasiChangePassword['status'] : 500;
-			$msg = isset($validasiChangePassword['msg']) ? $validasiChangePassword['msg'] : 500;
-			$error = isset($validasiChangePassword['error']) ? $validasiChangePassword['error'] : array();
-			echo json_encode(array("status"=>$status,"msg"=>$msg,"error"=>$error));
-		}
-	}
+        $hash = hash('sha512',$post_array['password'] . config_item('encryption_key'));
+        $this->db->set("password",$hash);
+        $this->db->where('id_admin', $primary_key);
+        $this->db->update('admin');
+     
+        return true;
+    }
 	public function tambah(){
-		$this->function_lib->cek_auth(array('super_admin'));
-		foreach($this->input->post() AS $variable=>$value)
-        {
-            $this->data[$variable]=$value;
-        }
+		if (empty($this->session->userdata('admin'))) {
+			redirect('admin/login?status=500?msg='.base64_encode("fitur hanya bisa diakses oleh admin"));
+		}
 		$this->load->model('Madmin');
 		if ($this->input->post('tambah')) {
 			$validasi = $this->Madmin->validasi();
-			$status = isset($validasi['status']) ? $validasi['status'] : 500;
-			$msg = isset($validasi['msg']) ? $validasi['msg'] : "";
-			if ($status==200) {		
+			if (trim($validasi['status'])==200) {		
 				$response = $this->Madmin->tambah();
 				$status = $response['status'];
 				$msg = $response['msg'];
-				$error = isset($validasi['error']) ? $validasi['error'] : array();
-				header('Content-Type: application/json');			
-				echo json_encode(array("status"=>$status,"msg"=>$msg,"error"=>$error));
-				exit();		
+				redirect(base_url().'user/admin?status='.$status.'&msg='.base64_encode($msg));
 			}else{
 				$status = 500;
 				$msg = $validasi['msg'];
-				$error = isset($validasi['error']) ? $validasi['error'] : array();
-				header('Content-Type: application/json');			
-				echo json_encode(array("status"=>$status,"msg"=>$msg,"error"=>$error));
-				exit();				
+				redirect(base_url().'user/admin/tambah?status='.$status.'&msg='.base64_encode($msg));
 			}		
 		}		
 		$data=array();
 		$this->load->view('user/admin/tambah', $data, FALSE);
 	}
+	public function ubah_password($id_admin){
+		$this->function_lib->cek_auth(array('super_admin'));
+        $user_sess = $this->function_lib->get_user_level();
+        $level = isset($user_sess['level']) ? $user_sess['level'] : "";
+        $id_user = isset($user_sess['id_user']) ? $user_sess['id_user'] : "";
+        $id_admin = $this->function_lib->get_one('id_admin','admin','id_admin="'.$id_admin.'"');
+        if (empty($id_admin) AND ($level!="owner" OR $level!="kasir")) {
+            redirect(base_url().'user/admin/index/');
+            exit();
+        }else{
+            $data['id_admin'] = $id_admin;
+            $this->load->view('user/admin/ubah_password', $data, FALSE);
+        }
+        
+    }
+    public function change_password($id_admin){
+        $this->function_lib->cek_auth(array('super_admin'));
+        if($this->input->post('change_password')){
+            $this->load->model('Madmin');
+            $validasiChangePassword = $this->Madmin->changePassword($id_admin); 
+            header('Content-Type: application/json');                       
+            $status = isset($validasiChangePassword['status']) ? $validasiChangePassword['status'] : 500;
+            $msg = isset($validasiChangePassword['msg']) ? $validasiChangePassword['msg'] : 500;
+            $error = isset($validasiChangePassword['error']) ? $validasiChangePassword['error'] : array();
+            echo json_encode(array("status"=>$status,"msg"=>$msg,"error"=>$error));
+        }
+    }
 }
 
-/* End of file Admin.php */
-/* Location: ./application/controllers/user/Admin.php */
+/* End of file admin.php */
+/* Location: ./application/controllers/user/admin.php */
