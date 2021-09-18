@@ -130,6 +130,7 @@ class pengurus_barang extends CI_Controller {
         $crud->set_relation('id_opd_pengurus_barang','opd','label_opd');
         $crud->columns('id_opd_pengurus_barang', 'Ubah Password','username_pengurus_barang','email_pengurus_barang','nama_pengurus_barang','no_hp_pengurus_barang','alamat_pengurus_barang','status_pengurus_barang');                 
         
+        $crud->where('status_pengurus_barang != "deleted"');
         $crud->order_by('id_pengurus_barang','DESC');
         $action = $this->uri->segment(4,0);
         

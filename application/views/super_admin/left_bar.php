@@ -24,7 +24,7 @@
 										</a>
 									</li>
 									<!-- user menu -->
-									<li class="nav-parent <?php if (!empty($url1) AND (trim($url1) == 'user' OR trim($url1) == "koordinator" OR trim($url1) == "pengurus_barang" OR trim($url1) == "admin")): ?>nav-expanded nav-active<?php endif ?>">
+									<li class="nav-parent <?php if (!empty($url1) AND (trim($url1) == 'user')): ?>nav-expanded nav-active<?php endif ?>">
 										<a>
 											<i class="fa fa-users" aria-hidden="true"></i>
 											<span>User</span>

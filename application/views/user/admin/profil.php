@@ -27,6 +27,7 @@
 	<link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendor/jquery-ui/css/ui-lightness/jquery-ui-1.10.4.custom.css" />
 	<link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendor/bootstrap-multiselect/bootstrap-multiselect.css" />
 	<link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendor/morris/morris.css" />
+	<link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendor/select2/select2.css" />
 
 	<!-- Theme CSS -->
 	<link rel="stylesheet" href="<?php echo base_url(); ?>assets/stylesheets/theme.css" />
@@ -68,7 +69,7 @@
 					</div>
 				</header>
 
-				<div class="row">
+				<div class="">
 
 					<div class="tabs">
 						<ul class="nav nav-tabs tabs-primary">
@@ -87,9 +88,22 @@
 									<h4 class="mb-xlg">Personal Information</h4>
 
 									<fieldset>
-										<?php if (trim($this->input->get('status'))!=""): ?>
-								<?php echo function_lib::response_notif($this->input->get('status'),$this->input->get('msg')); ?>
-							<?php endif ?> 
+									<?php if (trim($this->input->get('status'))!=""): ?>
+										<?php echo function_lib::response_notif($this->input->get('status'),$this->input->get('msg')); ?>
+									<?php endif ?> 
+										<div class="form-group">
+											<label class="col-md-3 control-label" for="profileFirstName">OPD</label>
+											<div class="col-md-8">
+												<select name="id_opd_admin" class="form-control select2">
+														<option value="">Pilih OPD</option>
+													<?php foreach ($opd as $key => $value): ?>
+														<option <?php if ($profil['id_opd_admin'] == $value['id_opd']): ?>
+															selected
+														<?php endif ?> value="<?php echo $value['id_opd'] ?>"><?php echo $value['label_opd']; ?></option>
+													<?php endforeach ?>
+												</select>
+											</div>
+										</div>										
 										<div class="form-group">
 											<label class="col-md-3 control-label" for="profileFirstName">Username</label>
 											<div class="col-md-8">
@@ -116,39 +130,42 @@
 								</form>
 							</div>
 							<div id="password" class="tab-pane">
-								<form>
-									<h4 class="mb-xlg">Change Password</h4>
-									<div class="alert alert-warning">
-										<p>fitur belum tersedia</p>
-									</div>
-									<fieldset class="mb-xl">
-										<div class="form-group">
-											<label class="col-md-3 control-label" for="profileNewPassword">New Password</label>
-											<div class="col-md-8">
-												<input type="text" class="form-control" id="profileNewPassword">
-											</div>
-										</div>
-										<div class="form-group">
-											<label class="col-md-3 control-label" for="profileNewPasswordRepeat">Repeat New Password</label>
-											<div class="col-md-8">
-												<input type="text" class="form-control" id="profileNewPasswordRepeat">
-											</div>
-										</div>
-									</fieldset>
-									<div class="panel-footer">
-										<div class="row">
-											<div class="col-md-9 col-md-offset-3">
-												<button type="submit" class="btn btn-primary">Submit</button>
-												<button type="reset" class="btn btn-default">Reset</button>
-											</div>
-										</div>
-									</div>
-								</form>										
+				                <form method="POST" id="change_password">
+				                    <h4 class="mb-xlg">Ubah Password</h4>                    
+				                    <fieldset class="mb-xl">
+				                    	<div class="form-group">
+				                            <label class="col-md-2 control-label" for="profileNewPassword">Password Saat Ini</label>
+				                            <div class="col-md-3">
+				                                <input type="password" class="form-control" name="old_password">
+				                            </div>
+				                        </div>
+				                        <div class="form-group">
+				                            <label class="col-md-2 control-label" for="profileNewPassword">Password Baru</label>
+				                            <div class="col-md-3">
+				                                <input type="password" class="form-control" name="new_password">
+				                            </div>
+				                        </div>
+				                        <div class="form-group">
+				                            <label class="col-md-2 control-label" for="profileNewPasswordRepeat">Ulangi Password</label>
+				                            <div class="col-md-3">
+				                                <input type="password" class="form-control" name="repeat_password">
+				                            </div>
+				                        </div>
+				                    </fieldset>
+				                    <div class="panel-footer">
+				                        <div class="row">
+				                            <div class="col-md-9 col-md-offset-3">
+				                                <button type="submit" class="btn btn-primary" name="change_password" value="1">Simpan</button>
+				                                <a href="<?php echo base_url('admin'); ?>" class="btn btn-default">Cancel</a>
+				                            </div>
+				                        </div>
+				                    </div>
+				                </form>                                     
 
 
 
 
-							</div>
+            </div>
 						</div>
 					</div>
 				</div>
@@ -167,8 +184,11 @@
 	<script src="<?php echo base_url(); ?>assets/vendor/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
 	<script src="<?php echo base_url(); ?>assets/vendor/magnific-popup/magnific-popup.js"></script>
 	<script src="<?php echo base_url(); ?>assets/vendor/jquery-placeholder/jquery.placeholder.js"></script>
+	<script src="<?php echo base_url(); ?>assets/vendor/select2/select2.js"></script>
 
-
+	<script type="text/javascript">
+		$(".select2").select2();
+	</script>
 
 	<!-- Theme Base, Components and Settings -->
 	<script src="<?php echo base_url(); ?>assets/javascripts/theme.js"></script>

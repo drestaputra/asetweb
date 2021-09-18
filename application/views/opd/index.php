@@ -89,6 +89,14 @@
                             
 						
 					</div>
+					<?php if (isset($level) && !empty($level) && trim($level) == "admin" && isset($isNotHaveOpd) AND $isNotHaveOpd): ?>
+						<div class="panel panel-warning">
+							<div class="panel-body bg-warning">
+								<p>Anda BELUM mengatur OPD / SKPD, <a class="btn btn-default" href="<?php echo base_url('opd/index/add') ?>">TAMBAH OPD</a> sendiri atau GUNAKAN OPD yang sudah ada lewat <a class="btn btn-default" href="<?php echo base_url('user/admin/profil') ?>">EDIT PROFIL</a></p>
+							</div>
+						</div>
+					<?php endif ?>
+					
 					<div class="panel panel-default">
 
                         <div class="panel-heading">

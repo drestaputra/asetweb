@@ -22,7 +22,7 @@ class Aset extends CI_Controller {
         $crud->set_theme('adminlte');
         $crud->set_table('aset');        
         $crud->set_subject('Aset Tanah');
-        $crud->where("aset.status_aset", "aktif");
+        $crud->where("aset.status_aset != 'deleted'");
         $crud->set_language('indonesian');
         
     

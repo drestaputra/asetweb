@@ -21,8 +21,8 @@
 								<img src="<?php echo base_url(); ?>assets/images//!logged-user.jpg" alt="Joseph Doe" class="img-circle" data-lock-picture="<?php echo base_url(); ?>assets/images//!logged-user.jpg" />
 							</figure>
 							<div class="profile-info" data-lock-name="" data-lock-email="">
-								<span class="name"><?php echo $this->session->userdata('kasir')['username']; ?></span>
-								<span class="role">Kasir</span>
+								<span class="name"><?php echo $this->session->userdata('admin')['username']; ?></span>
+								<span class="role">Admin</span>
 							</div>
 			
 							<i class="fa custom-caret"></i>
@@ -33,12 +33,12 @@
 
 								<li class="divider"></li>
 								<li>
-									<a role="menuitem" tabindex="-1" href="<?php echo base_url('user/kasir/profil'); ?>"><i class="fa fa-user"></i> Profil</a>
+									<a role="menuitem" tabindex="-1" href="<?php echo base_url('user/admin/profil'); ?>"><i class="fa fa-user"></i> Profil</a>
 								</li>
 								<li class="divider"></li>
 								
 								<li>
-									<a role="menuitem" tabindex="-1" href="<?php echo base_url('kasir/logout'); ?>"><i class="fa fa-power-off"></i> Logout</a>
+									<a role="menuitem" tabindex="-1" href="<?php echo base_url('admin/logout'); ?>"><i class="fa fa-power-off"></i> Logout</a>
 								</li>
 
 							</ul>

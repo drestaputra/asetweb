@@ -130,6 +130,7 @@ class koordinator extends CI_Controller {
         $crud->set_relation('id_opd_koordinator','opd','label_opd');
         $crud->columns('id_opd_koordinator', 'Ubah Password','username_koordinator','email_koordinator','nama_koordinator','no_hp_koordinator','alamat_koordinator','status_koordinator');                 
 	    
+	    $crud->where('status_koordinator != "deleted"');
         $crud->order_by('id_koordinator','DESC');
         $action = $this->uri->segment(4,0);
         

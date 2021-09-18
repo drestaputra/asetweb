@@ -145,6 +145,7 @@ class Madmin extends CI_Model {
     function editProfil(){
         $username = $this->input->post('username',TRUE);        
         $email = $this->input->post('email',TRUE);        
+        $id_opd_admin = $this->input->post('id_opd_admin',TRUE);        
         $idAdmin = $this->session->userdata('admin')['id_admin'];                
         $validasi = $this->validasi();      
         $status = 500;
@@ -152,8 +153,8 @@ class Madmin extends CI_Model {
         if ($validasi['status']==200) {
             $columnUpdate = array(
                 "email"=> $email,
-                "username"=> $username,                
-                "status"=> $status,
+                "username"=> $username,
+                "id_opd_admin" => $id_opd_admin
             );
             $this->db->where('id_admin="'.$idAdmin.'"');
             $this->db->update('admin', $columnUpdate);

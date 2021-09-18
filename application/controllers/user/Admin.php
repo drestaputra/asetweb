@@ -51,6 +51,7 @@ class admin extends CI_Controller {
 	}
 	public function profil(){
 		$this->load->model('Madmin');
+		$this->load->model('Mopd');
 		if (empty($this->session->userdata('admin'))) {
 			redirect(base_url('admin/login'));
 			exit();
@@ -75,6 +76,7 @@ class admin extends CI_Controller {
 				redirect('user/admin/profil');
 			}
 		}
+		$data['opd'] = $this->Mopd->getAllOpd();
 		$data['profil'] = $this->function_lib->get_row('admin','id_admin="'.$idadmin.'"');
 		$this->load->view('user/admin/profil',$data,FALSE);
 	}
@@ -131,6 +133,7 @@ class admin extends CI_Controller {
         $crud->columns('id_opd_admin', 'Ubah Password','username','email','status');                 
 	    
         $crud->order_by('id_admin','DESC');
+        $crud->where('status != "deleted"');
         $action = $this->uri->segment(4,0);
         
         $crud->display_as('id_opd_admin','OPD')
