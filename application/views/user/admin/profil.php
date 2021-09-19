@@ -27,7 +27,6 @@
 	<link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendor/jquery-ui/css/ui-lightness/jquery-ui-1.10.4.custom.css" />
 	<link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendor/bootstrap-multiselect/bootstrap-multiselect.css" />
 	<link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendor/morris/morris.css" />
-	<link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendor/select2/select2.css" />
 
 	<!-- Theme CSS -->
 	<link rel="stylesheet" href="<?php echo base_url(); ?>assets/stylesheets/theme.css" />
@@ -88,10 +87,10 @@
 									<h4 class="mb-xlg">Personal Information</h4>
 
 									<fieldset>
-									<?php if (trim($this->input->get('status'))!=""): ?>
-										<?php echo function_lib::response_notif($this->input->get('status'),$this->input->get('msg')); ?>
-									<?php endif ?> 
-										<div class="form-group">
+										<?php if (trim($this->input->get('status'))!=""): ?>
+								<?php echo function_lib::response_notif($this->input->get('status'),$this->input->get('msg')); ?>
+							<?php endif ?> 
+							<div class="form-group">
 											<label class="col-md-3 control-label" for="profileFirstName">OPD</label>
 											<div class="col-md-8">
 												<select name="id_opd_admin" class="form-control select2">
@@ -103,7 +102,7 @@
 													<?php endforeach ?>
 												</select>
 											</div>
-										</div>										
+										</div>		
 										<div class="form-group">
 											<label class="col-md-3 control-label" for="profileFirstName">Username</label>
 											<div class="col-md-8">
@@ -130,7 +129,7 @@
 								</form>
 							</div>
 							<div id="password" class="tab-pane">
-				                <form method="POST" id="change_password">
+								 <form method="POST" id="change_password">
 				                    <h4 class="mb-xlg">Ubah Password</h4>                    
 				                    <fieldset class="mb-xl">
 				                    	<div class="form-group">
@@ -160,12 +159,12 @@
 				                            </div>
 				                        </div>
 				                    </div>
-				                </form>                                     
+				                </form>   										
 
 
 
 
-            </div>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -184,11 +183,8 @@
 	<script src="<?php echo base_url(); ?>assets/vendor/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
 	<script src="<?php echo base_url(); ?>assets/vendor/magnific-popup/magnific-popup.js"></script>
 	<script src="<?php echo base_url(); ?>assets/vendor/jquery-placeholder/jquery.placeholder.js"></script>
-	<script src="<?php echo base_url(); ?>assets/vendor/select2/select2.js"></script>
 
-	<script type="text/javascript">
-		$(".select2").select2();
-	</script>
+
 
 	<!-- Theme Base, Components and Settings -->
 	<script src="<?php echo base_url(); ?>assets/javascripts/theme.js"></script>

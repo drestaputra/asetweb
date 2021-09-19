@@ -129,7 +129,7 @@ class admin extends CI_Controller {
         $crud->set_table('admin');
         $crud->set_subject('Data Admin');
         $crud->set_language('indonesian');
-        $crud->set_relation('id_opd_admin','opd','label_opd');
+        $crud->set_relation('id_opd_admin','opd','label_opd', 'status_opd!="deleted"');
         $crud->columns('id_opd_admin', 'Ubah Password','username','email','status');                 
 	    
         $crud->order_by('id_admin','DESC');
@@ -150,10 +150,13 @@ class admin extends CI_Controller {
         $crud->unset_edit_fields('password');
         $crud->unset_add_fields('status');
         $data = $crud->render();
+        $data->state = $crud->getState();
+        $this->load->model('Mopd');
+        $data->dataOpd = $this->Mopd->getAllOpd();
 
         
  
-        $this->load->view('admin/index', $data, FALSE);
+        $this->load->view('user/admin/index', $data, FALSE);
     }
     public function link_ubah_password($value, $row){
         return '<a href="'.base_url("user/admin/ubah_password/".$row->id_admin).'" class="btn btn-info btn-sm"><i class="fa fa-key"></i></a>';

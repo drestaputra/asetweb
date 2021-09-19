@@ -346,7 +346,7 @@
             order_direction = 'asc';
         }
 
-        $('.gc-search-row input.searchable-input').each(function () {
+        $('.gc-search-row .searchable-input').each(function () {
             if ($(this).val() !== '') {
                 search_fields.push($(this).attr('name'));
                 search_texts.push($(this).val());
@@ -458,6 +458,16 @@
                 datagrid_object.SearchAndOrderingTrigger();
 
             }, timer_timeout);
+        });
+        $('.grocery-crud-table .searchable-input.searchable-input-select').on('change', function (event) {
+
+            clearTimeout(datagrid_object.search_timer);
+            datagrid_object.search_timer = setTimeout(function () {
+                $('.page-number-hidden').val('1');
+                datagrid_object.search_fields="1";
+                datagrid_object.SearchAndOrderingTrigger();
+
+            }, 0);
         });
     };
 

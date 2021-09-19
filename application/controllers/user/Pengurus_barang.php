@@ -127,14 +127,40 @@ class pengurus_barang extends CI_Controller {
         $crud->set_table('pengurus_barang');
         $crud->set_subject('Data Pengurus Barang');
         $crud->set_language('indonesian');
-        $crud->set_relation('id_opd_pengurus_barang','opd','label_opd');
-        $crud->columns('id_opd_pengurus_barang', 'Ubah Password','username_pengurus_barang','email_pengurus_barang','nama_pengurus_barang','no_hp_pengurus_barang','alamat_pengurus_barang','status_pengurus_barang');                 
+        
+        $crud->columns('id_admin_pengurus_barang', 'Ubah Password','username_pengurus_barang','email_pengurus_barang','nama_pengurus_barang','no_hp_pengurus_barang','alamat_pengurus_barang','status_pengurus_barang');                 
         
         $crud->where('status_pengurus_barang != "deleted"');
         $crud->order_by('id_pengurus_barang','DESC');
         $action = $this->uri->segment(4,0);
+
+         $this->load->model('Mopd');
+
+        if ($level == "admin") {         
+            $crud->set_relation('id_admin_pengurus_barang','admin','id_opd_admin,(SELECT label_opd FROM opd where id_opd=id_opd_admin)', 'status!="deleted" AND id_admin="'.$id_user.'"');   
+            $crud->where("pengurus_barang.id_admin_pengurus_barang",$id_user);
+            // $crud->field_type('id_admin_pengurus_barang', 'readonly', $id_user);            
+            if($crud->getState() != 'add' AND $crud->getState() != 'list') {
+                // $crud->set_relation('id_owner','owner','nama_koperasi');
+                if ($crud->getState() == "read" OR $crud->getState() == "edit") {
+                    $stateInfo = (array) $crud->getStateInfo();
+                    $pk = isset($stateInfo['primary_key']) ? $stateInfo['primary_key'] : 0;
+                    $id_kolektor = $this->function_lib->get_one('id_pengurus_barang','pengurus_barang','id_pengurus_barang="'.$pk.'" AND id_admin_pengurus_barang="'.$id_user.'"');
+                    if (empty($id_kolektor)) {
+                        redirect(base_url().'user/pengurus_barang/index/');
+                        exit();
+                    }
+                }
+                
+            }            
+            // $crud->set_relation('id_kolektor','kolektor','username','id_kolektor IN (SELECT id_kolektor FROM kolektor WHERE id_owner="'.$id_user.'")');                                
+            $dataOpd = $this->Mopd->getAllOpd("id_opd IN (SELECT id_opd_admin FROM admin WHERE id_admin=".$this->db->escape($id_user).")");
+        }else{
+            $dataOpd = $this->Mopd->getAllOpd();
+            $crud->set_relation('id_admin_pengurus_barang','admin','id_opd_admin,(SELECT label_opd FROM opd where id_opd=id_opd_admin)', 'status!="deleted"');
+        }
         
-        $crud->display_as('id_opd_pengurus_barang','OPD')
+        $crud->display_as('id_admin_pengurus_barang','OPD Admin')
              ->display_as('nama_pengurus_barang','Nama')
              ->display_as('username_pengurus_barang','Username')
              ->display_as('email_pengurus_barang','Email')
@@ -147,11 +173,14 @@ class pengurus_barang extends CI_Controller {
         $crud->unique_fields(['username_pengurus_barang','email_pengurus_barang']);        
 
         $crud->callback_column('Ubah Password', array($this, 'link_ubah_password'));        
-        $crud->required_fields('id_opd_pengurus_barang','nama_pengurus_barang','username_pengurus_barang','password_pengurus_barang','email_pengurus_barang','status_pengurus_barang');
+        $crud->required_fields('id_admin_pengurus_barang','nama_pengurus_barang','username_pengurus_barang','password_pengurus_barang','email_pengurus_barang','status_pengurus_barang');
         $crud->callback_after_insert(array($this, 'cpass'));
         $crud->unset_edit_fields('password_pengurus_barang');
         $crud->unset_add_fields('status_pengurus_barang');
         $data = $crud->render();
+        $data->state = $crud->getState();
+        
+        $data->dataOpd = $dataOpd;
 
         
  

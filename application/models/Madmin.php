@@ -151,15 +151,23 @@ class Madmin extends CI_Model {
         $status = 500;
         $msg = "";
         if ($validasi['status']==200) {
-            $columnUpdate = array(
-                "email"=> $email,
-                "username"=> $username,
-                "id_opd_admin" => $id_opd_admin
-            );
-            $this->db->where('id_admin="'.$idAdmin.'"');
-            $this->db->update('admin', $columnUpdate);
-            $status = 200;
-            $msg = "Berhasil Update";
+            // cek opd apakah sudah dimiliki admin lain
+            $cekIdOpd = $this->function_lib->get_one('id_opd_admin', 'admin', 'id_opd_admin IN (SELECT id_opd FROM opd WHERE status_opd!="deleted") AND id_opd_admin = '.$this->db->escape($id_opd_admin).' AND id_admin !='.$this->db->escape($idAdmin).' ');
+            if (!empty($cekIdOpd)) {
+                $status = 500;
+                $msg = "OPD ini sudah digunakan oleh admin lain, silahkan pilih OPD lain atau hubungi Super Admin untuk mengubah OPD";
+                
+            }else{
+                $columnUpdate = array(
+                    "email"=> $email,
+                    "username"=> $username,
+                    "id_opd_admin" => $id_opd_admin
+                );
+                $this->db->where('id_admin="'.$idAdmin.'"');
+                $this->db->update('admin', $columnUpdate);
+                $status = 200;
+                $msg = "Berhasil Update";
+            }
         }else{
             $status = $validasi['status'];
             $msg = $validasi['msg'];
@@ -270,44 +278,7 @@ class Madmin extends CI_Model {
         }
         return array("status"=>$status,"msg"=>$msg,"error"=>$error);
     }
-    public function get_grafik_user_owner($tahun = "2021"){    
-        $query = $this->db->query('SELECT MONTH(tgl_pendaftaran_sistem) AS bulan,count(id_owner) AS total FROM owner WHERE YEAR(tgl_pendaftaran_sistem)='.$tahun.' group by year(tgl_pendaftaran_sistem),month(tgl_pendaftaran_sistem) order by year(tgl_pendaftaran_sistem),month(tgl_pendaftaran_sistem)');
-        $data = $query->result_array();
-        return $data;
-    }
-    public function get_grafik_user_kolektor($tahun = "2021"){    
-        $query = $this->db->query('SELECT MONTH(tgl_daftar) AS bulan,count(id_kolektor) AS total FROM kolektor WHERE YEAR(tgl_daftar)='.$tahun.' group by year(tgl_daftar),month(tgl_daftar) order by year(tgl_daftar),month(tgl_daftar)');
-        $data = $query->result_array();
-        return $data;
-    }
-    public function get_grafik_user_kasir($tahun = "2021"){    
-        $query = $this->db->query('SELECT MONTH(tgl_daftar) AS bulan,count(id_kasir) AS total FROM kasir WHERE YEAR(tgl_daftar)='.$tahun.' group by year(tgl_daftar),month(tgl_daftar) order by year(tgl_daftar),month(tgl_daftar)');
-        $data = $query->result_array();
-        return $data;
-    }
-    public function get_grafik_user_nasabah($tahun = "2021"){    
-        $query = $this->db->query('SELECT MONTH(tgl_bergabung) AS bulan,count(id_nasabah) AS total FROM nasabah WHERE YEAR(tgl_bergabung)='.$tahun.' group by year(tgl_bergabung),month(tgl_bergabung) order by year(tgl_bergabung),month(tgl_bergabung)');
-        $data = $query->result_array();
-        return $data;
-    }
-    public function get_grafik_riwayat_pinjaman($month = "1", $id_owner=""){
-        $where_add = '';
-        if (!empty($id_owner)) {
-            $where_add = 'id_pinjaman IN (SELECT id_pinjaman FROM pinjaman where id_owner='.$this->db->escape($id_owner).') AND ';
-        }
-        $query = $this->db->query('SELECT DAY(tgl_riwayat_pinjaman) AS hari,sum(jumlah_riwayat_pembayaran) AS total FROM riwayat_pinjaman WHERE '.$where_add.' MONTH(tgl_riwayat_pinjaman)='.$month.' group by month(tgl_riwayat_pinjaman),day(tgl_riwayat_pinjaman) order by month(tgl_riwayat_pinjaman),month(tgl_riwayat_pinjaman) ASC');
-        $data = $query->result_array();
-        return $data;
-    }
-    public function get_grafik_riwayat_simpanan($month = "", $id_owner=""){
-        $where_add = '';
-        if (!empty($id_owner)) {
-            $where_add = 'id_simpanan IN (SELECT id_simpanan FROM simpanan where id_owner='.$this->db->escape($id_owner).') AND ';
-        }
-        $query = $this->db->query('SELECT DAY(tgl_riwayat_simpanan) AS hari,sum(jumlah_riwayat_simpanan) AS total FROM riwayat_simpanan WHERE '.$where_add.' MONTH(tgl_riwayat_simpanan)='.$month.' group by month(tgl_riwayat_simpanan),day(tgl_riwayat_simpanan) order by month(tgl_riwayat_simpanan),month(tgl_riwayat_simpanan) ASC');
-        $data = $query->result_array();
-        return $data;
-    }
+  
     public function lupass(){
         $this->load->library('form_validation');                    
         $data['status']=500;                                    

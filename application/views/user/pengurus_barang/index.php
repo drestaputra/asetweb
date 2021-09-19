@@ -26,6 +26,7 @@
 		<link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendor/jquery-ui/css/ui-lightness/jquery-ui-1.10.4.custom.css" />
 		<link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendor/bootstrap-multiselect/bootstrap-multiselect.css" />
 		<link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendor/morris/morris.css" />
+		<link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendor/select2/select2.css" />
 
 		<!-- Theme CSS -->
 		<link rel="stylesheet" href="<?php echo base_url(); ?>assets/stylesheets/theme.css" />
@@ -122,76 +123,45 @@
 		
 		
 				
-		<!-- flexigrid -->		
-       <script type="text/javascript">
+			<!-- flexigrid -->		
+	    <script type="text/javascript">
+	       	
+				
+	       	
+				function searchCustom(){
+					$("[name=s0b4ad306]").parent().html(
+						"<select style='width:200px;' class='form-control searchable-input searchable-input-select' name='id_opd_admin'><option value=''>Semua OPD</option><?php foreach ($dataOpd as $key => $value): ?><option value='<?php echo $value['id_opd'] ?>'><?php echo $value['label_opd'] ?></option><?php endforeach ?></select>"
+					);
+					$(".searchable-input-select").select2();
+				
+					
+				}
+				
+				$(document).ready(function() {
+					<?php if (isset($state) AND $state=="add"): ?>
 
-			$(document).ready(function() {
-				<?php if (isset($state) AND $state=="add"): ?>
-					$('#field-kabupaten').empty();
-					$('#field-kabupaten').chosen().trigger('chosen:updated');
-					$('#field-kabupaten').change();
-					$('#field-kecamatan').empty();
-					$('#field-kecamatan').chosen().trigger('chosen:updated');
-					$('#field-kecamatan').change();
-				<?php else: ?>
-					$("[name=s08bc8536]").hide();
-					$("[name='Ubah Password']").hide();
-				<?php endif ?>
-				$('#field-provinsi').change(function() {					
-					var selectedValue = $('#field-provinsi').val();					
-					$.post('ajax_extension/kabupaten/id_provinsi/'+encodeURI(selectedValue.replace(/\//g,'_agsl_')), {}, function(data) {
-					var $el = $('#field-kabupaten');
-						  var newOptions = data;
-						  $el.empty(); // remove old options
-						  $el.append($('<option></option>').attr('value', '').text(''));
-						  $.each(newOptions, function(key, value) {
-						    $el.append($('<option></option>')
-						       .attr('value', key).text(value));
-						    });
-						  //$el.attr('selectedIndex', '-1');
-						  $el.chosen().trigger('chosen:updated');
-
-    	  			},'json');
-    	  			$('#field-kabupaten').change();
+						// jika add
+					<?php else: ?>
+						
+						$("[name='Ubah Password']").remove();
+						// $('.grocery-crud-table .searchable-input.searchable-input-select').on('change', function (event) {alert("dasd")});
+						 
+					<?php endif ?>
+					
 				});
-			});
-			
-</script>
-<script type="text/javascript">
-
-			$(document).ready(function() {
-				$('#field-kabupaten').change(function() {
-					var selectedValue = $('#field-kabupaten').val();
-					// alert('selectedValue'+selectedValue);
-					//alert('post:'+'ajax_extension/kecamatan/id_kabupaten/'+encodeURI(selectedValue.replace(/\//g,'_agsl_')));
-					$.post('ajax_extension/kecamatan/id_kabupaten/'+encodeURI(selectedValue.replace(/\//g,'_agsl_')), {}, function(data) {
-					//alert('data'+data);
-					var $el = $('#field-kecamatan');
-						  var newOptions = data;
-						  $el.empty(); // remove old options
-						  $el.append($('<option></option>').attr('value', '').text(''));
-						  $.each(newOptions, function(key, value) {
-						    $el.append($('<option></option>')
-						       .attr('value', key).text(value));
-						    });
-						  //$el.attr('selectedIndex', '-1');
-						  $el.chosen().trigger('chosen:updated');
-
-    	  			},'json');
-    	  			$('#field-kecamatan').change();
-				});
-			});
-			
-</script>
-<script src="<?php echo base_url(); ?>assets/javascripts/theme.js"></script>
+				
+		</script>
+		<script src="<?php echo base_url(); ?>assets/javascripts/theme.js"></script>
 		
 		<!-- Theme Custom -->
 		<script src="<?php echo base_url(); ?>assets/javascripts/theme.custom.js"></script>
 		
 		<!-- Theme Initialization Files -->
 		<script src="<?php echo base_url(); ?>assets/javascripts/theme.init.js"></script>
- 
-	
+		<script src="<?php echo base_url(); ?>assets/vendor/select2/select2.js"></script>
+		<script type="text/javascript">
+			searchCustom();
+		</script>
           
 	</body>
 </html>

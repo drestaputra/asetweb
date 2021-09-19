@@ -127,14 +127,41 @@ class koordinator extends CI_Controller {
         $crud->set_table('koordinator');
         $crud->set_subject('Data Koordinator');
         $crud->set_language('indonesian');
-        $crud->set_relation('id_opd_koordinator','opd','label_opd');
-        $crud->columns('id_opd_koordinator', 'Ubah Password','username_koordinator','email_koordinator','nama_koordinator','no_hp_koordinator','alamat_koordinator','status_koordinator');                 
+        
+        
+        $crud->columns('id_admin_koordinator', 'Ubah Password','username_koordinator','email_koordinator','nama_koordinator','no_hp_koordinator','alamat_koordinator','status_koordinator');                 
 	    
 	    $crud->where('status_koordinator != "deleted"');
         $crud->order_by('id_koordinator','DESC');
         $action = $this->uri->segment(4,0);
+
+        $this->load->model('Mopd');
+
+        if ($level == "admin") {  
+        	$crud->set_relation('id_admin_koordinator','admin','id_opd_admin,(SELECT label_opd FROM opd where id_opd=id_opd_admin)','status!="deleted" AND id_admin="'.$id_user.'"');          
+            $crud->where("koordinator.id_admin_koordinator",$id_user);
+            // $crud->field_type('id_admin_koordinator', 'readonly', $id_user);            
+            if($crud->getState() != 'add' AND $crud->getState() != 'list') {
+                // $crud->set_relation('id_owner','owner','nama_koperasi');
+                if ($crud->getState() == "read" OR $crud->getState() == "edit") {
+                    $stateInfo = (array) $crud->getStateInfo();
+                    $pk = isset($stateInfo['primary_key']) ? $stateInfo['primary_key'] : 0;
+                    $id_kolektor = $this->function_lib->get_one('id_koordinator','koordinator','id_koordinator="'.$pk.'" AND id_admin_koordinator="'.$id_user.'"');
+                    if (empty($id_kolektor)) {
+                        redirect(base_url().'user/koordinator/index/');
+                        exit();
+                    }
+                }
+                
+            }            
+            // $crud->set_relation('id_kolektor','kolektor','username','id_kolektor IN (SELECT id_kolektor FROM kolektor WHERE id_owner="'.$id_user.'")');                                
+        	$dataOpd = $this->Mopd->getAllOpd("id_opd IN (SELECT id_opd_admin FROM admin WHERE id_admin=".$this->db->escape($id_user).")");
+        }else{
+        	$dataOpd = $this->Mopd->getAllOpd();
+        	$crud->set_relation('id_admin_koordinator','admin','id_opd_admin,(SELECT label_opd FROM opd where id_opd=id_opd_admin)','status!="deleted"');
+        }
         
-        $crud->display_as('id_opd_koordinator','OPD')
+        $crud->display_as('id_admin_koordinator','OPD Admin')
              ->display_as('nama_koordinator','Nama')
              ->display_as('username_koordinator','Username')
              ->display_as('email_koordinator','Email')
@@ -147,11 +174,14 @@ class koordinator extends CI_Controller {
         $crud->unique_fields(['username_koordinator','email_koordinator']);        
 
         $crud->callback_column('Ubah Password', array($this, 'link_ubah_password'));        
-        $crud->required_fields('id_opd_koordinator','nama_koordinator','username_koordinator','password_koordinator','email_koordinator','status_koordinator');
+        $crud->required_fields('id_admin_koordinator','nama_koordinator','username_koordinator','password_koordinator','email_koordinator','status_koordinator');
         $crud->callback_after_insert(array($this, 'cpass'));
         $crud->unset_edit_fields('password_koordinator');
         $crud->unset_add_fields('status_koordinator');
         $data = $crud->render();
+        $data->state = $crud->getState();
+        
+        $data->dataOpd = $dataOpd;
 
         
  

@@ -105,7 +105,7 @@
                         <div class="row">
                             <div class="col-md-9 col-md-offset-3">
                                 <button type="submit" class="btn btn-primary" name="change_password" value="1">Simpan</button>
-                                <a href="<?php echo base_url('admin'); ?>" class="btn btn-default">Cancel</a>
+                                <a href="<?php echo base_url('koordinator'); ?>" class="btn btn-default">Cancel</a>
                             </div>
                         </div>
                     </div>
@@ -124,7 +124,7 @@
 </section>
 </div>
 
-<?php $this->load->view('admin/right_bar'); ?>
+<?php $this->load->view('koordinator/right_bar'); ?>
 </section>
 <!-- Vendor -->
 <script src="<?php echo base_url(); ?>assets/vendor/jquery/jquery.js"></script>
@@ -163,13 +163,13 @@ $('form#change_password').submit(function(event) {
     };  
     if (confirm("Yakin mengubah password?")) {
       $.ajax({
-        url: '<?php echo base_url().'user/admin/change_password/'.$id_admin ?>',
+        url: '<?php echo base_url().'user/koordinator/change_password/'.$id_koordinator ?>',
         type: 'POST',
         dataType: 'JSON',
         data: formData,
         success :function (response){
           if (response.status == 200) {
-            window.location = '<?php echo base_url("user/admin?status=200&msg=").base64_encode("Berhasil mengubah admin"); ?>';
+            window.location = '<?php echo base_url("user/koordinator?status=200&msg=").base64_encode("Berhasil mengubah koordinator"); ?>';
           }else{
             if (response.error.new_password) {
                   $('div:has(> [name=new_password])').addClass('has-error');

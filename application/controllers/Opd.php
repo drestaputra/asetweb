@@ -92,6 +92,13 @@ class Opd extends CI_Controller {
         $this->db->where('id_opd', $primary_key);
         return $this->db->update('opd', $columnUpdate);       
     } 
+    function getAllOpd(){
+        $this->function_lib->cek_auth(array("super_admin","admin"));
+        header("Content-type: Application/json");
+        $this->load->model('Mopd');
+        $dataOpd = $this->Mopd->getAllOpd();
+        echo(json_encode($dataOpd));
+    }
 }
 
 /* End of file Berita.php */
