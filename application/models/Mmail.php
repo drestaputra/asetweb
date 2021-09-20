@@ -18,9 +18,9 @@ class Mmail extends CI_Model {
 	// Not sure if Priority will also set the Importance header:
 	$mail->AddCustomHeader("Importance: High");
 	//Set SMTP host name                          
-	$mail->Host = "ssl://mail.artakita.com"; //host mail server	
+	$mail->Host = "ssl://mail.siana.id"; //host mail server	
 	$mail->SMTPAuth = true;                          	
-	$mail->Username = "cs@artakita.com";   //nama-email smtp          
+	$mail->Username = "kontak@siana.id";   //nama-email smtp          
 	$mail->Password = "cs123arta!@#kita";           //password email smtp		
 	$mail->SMTPSecure = "ssl";                           
 	//Set TCP port to connect to 

@@ -81,6 +81,9 @@
                             <section class="panel">
 
                                 <div class="panel-body">
+                                    <?php if (isset($level) && trim($level) == "super_admin"): ?>
+                                        
+                                    
                                     <div class="form-group">
                                         <label class="col-sm-2 control-label">Website Name <span class="required">*</span></label>
                                         <div class="col-sm-10">
@@ -179,6 +182,16 @@
                                                     selected
                                                 <?php endif ?>>Sembunyikan</option>
                                             </select>
+                                        </div>                                            
+                                    </div>
+                                    <?php endif ?>
+                                    <div class="form-group">
+                                        <div class="col-md-12">
+                                            <div class="alert alert-danger"><p>Jika Anda mengubah jenis hak yang sudah dipakai oleh beberapa aset, maka aset tanah yang berjenis hak itu akan berubah menjadi tidak mempunyai jenis hak</p></div>
+                                        </div>
+                                        <label class="col-sm-2 control-label">Jenis Hak<span class="required">* Gunakan koma "," untuk memisahkan antar jenis hak</span></label>
+                                        <div class="col-sm-10">
+                                            <textarea class="form-control" name="aset_jenis_hak"><?php echo ($this->input->post('aset_jenis_hak')!="")?$this->input->post('aset_jenis_hak'):$aset_jenis_hak; ?></textarea>
                                         </div>                                            
                                     </div>
                                 </div>

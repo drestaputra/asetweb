@@ -21,7 +21,7 @@ class Muser extends CI_Model {
         if ($this->form_validation->run() == TRUE) {            
 		    	if (!empty($this->session->userdata('user'))) {
                 	$id_user = $this->session->userdata('user')['id_user'];                    
-                    $id_user = $this->function_lib->get_one('id_user','user','password='.$this->db->escape($oldPasswordHash).'');
+                    $id_user = $this->function_lib->get_one('id_user','user','password='.$this->db->escape($oldPasswordHash).' AND id_user = '.$this->db->escape($id_user).'');
 		    	}
                 if (floatval($id_user) != 0) {     
                     $columnUpdate = array(

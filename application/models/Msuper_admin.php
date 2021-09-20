@@ -112,7 +112,7 @@ class Msuper_admin extends CI_Model {
         $this->form_validation->set_rules('old_password', 'Password Lama', 'required');  
         $this->form_validation->set_rules('repeat_password', 'Konfirmasi Password', 'required');  
         if ($this->form_validation->run() == TRUE) {  
-            $id_super_admin = $this->function_lib->get_one('id_super_admin','super_admin','password='.$this->db->escape($oldPasswordHash).'');
+            $id_super_admin = $this->function_lib->get_one('id_super_admin','super_admin','password='.$this->db->escape($oldPasswordHash).' AND id_super_admin = '.$this->db->escape($id_super_admin).'');
                 if (floatval($id_super_admin) != 0) {     
                     $columnUpdate = array(
                         "password" => hash('sha512',$new_password . config_item('encryption_key')),   

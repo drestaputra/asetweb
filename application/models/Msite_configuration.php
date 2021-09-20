@@ -15,6 +15,11 @@ class Msite_configuration extends CI_Model {
 	{
 		return $this->db->query('SELECT * FROM site_configuration')->result_array();
 	}
+	function editJenisHak($jenisHakStr)
+	{
+		// ALTER TABLE `aset` CHANGE `jenis_hak` `jenis_hak` ENUM('Hak Guna','Hak Pakai') CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL;
+		$this->db->query("ALTER TABLE `aset` CHANGE `jenis_hak` `jenis_hak` ENUM(".$jenisHakStr.") CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL;");
+	}
 }
 
 /* End of file Msite_configuration.php */

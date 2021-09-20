@@ -5,8 +5,8 @@
 	<!-- Basic -->
 	<meta charset="UTF-8">
 
-	<title>Dashboard Admin | <?php echo function_lib::get_config_value('website_name'); ?></title>
-	<meta name="keywords" content="Dashboard Admin - <?php echo function_lib::get_config_value('website_name'); ?>" />
+	<title>Dashboard Koordinator | <?php echo function_lib::get_config_value('website_name'); ?></title>
+	<meta name="keywords" content="Dashboard Koordinator - <?php echo function_lib::get_config_value('website_name'); ?>" />
 	<meta name="description" content="<?php echo function_lib::get_config_value('website_seo'); ?>">
 	<meta name="author" content="okler.net">
 
@@ -68,7 +68,7 @@
 					</div>
 				</header>
 
-				<div class="row">
+				<div class="">
 
 					<div class="tabs">
 						<ul class="nav nav-tabs tabs-primary">
@@ -93,13 +93,13 @@
 										<div class="form-group">
 											<label class="col-md-3 control-label" for="profileFirstName">Username</label>
 											<div class="col-md-8">
-												<input type="text" name="username" class="form-control" value="<?php echo ($this->input->post('username')!="")?$this->input->post('username'):$profil['username']; ?>">
+												<input type="text" name="username_koordinator" class="form-control" value="<?php echo ($this->input->post('username_koordinator')!="")?$this->input->post('username_koordinator'):$profil['username_koordinator']; ?>">
 											</div>
 										</div>										
 										<div class="form-group">
 											<label class="col-md-3 control-label" for="profileAddress">Email</label>
 											<div class="col-md-8">
-												<input type="email" class="form-control"  name="email" value="<?php echo ($this->input->post('email')!="")?$this->input->post('email'):$profil['email']; ?>">
+												<input type="email_koordinator" class="form-control"  name="email_koordinator" value="<?php echo ($this->input->post('email_koordinator')!="")?$this->input->post('email_koordinator'):$profil['email_koordinator']; ?>">
 											</div>
 										</div>										
 									</fieldset>	
@@ -116,34 +116,37 @@
 								</form>
 							</div>
 							<div id="password" class="tab-pane">
-								<form>
-									<h4 class="mb-xlg">Change Password</h4>
-									<div class="alert alert-warning">
-										<p>fitur belum tersedia</p>
-									</div>
-									<fieldset class="mb-xl">
-										<div class="form-group">
-											<label class="col-md-3 control-label" for="profileNewPassword">New Password</label>
-											<div class="col-md-8">
-												<input type="text" class="form-control" id="profileNewPassword">
-											</div>
-										</div>
-										<div class="form-group">
-											<label class="col-md-3 control-label" for="profileNewPasswordRepeat">Repeat New Password</label>
-											<div class="col-md-8">
-												<input type="text" class="form-control" id="profileNewPasswordRepeat">
-											</div>
-										</div>
-									</fieldset>
-									<div class="panel-footer">
-										<div class="row">
-											<div class="col-md-9 col-md-offset-3">
-												<button type="submit" class="btn btn-primary">Submit</button>
-												<button type="reset" class="btn btn-default">Reset</button>
-											</div>
-										</div>
-									</div>
-								</form>										
+								 <form method="POST" id="change_password">
+				                    <h4 class="mb-xlg">Ubah Password</h4>                    
+				                    <fieldset class="mb-xl">
+				                    	<div class="form-group">
+				                            <label class="col-md-2 control-label" for="profileNewPassword">Password Saat Ini</label>
+				                            <div class="col-md-3">
+				                                <input type="password" class="form-control" name="old_password">
+				                            </div>
+				                        </div>
+				                        <div class="form-group">
+				                            <label class="col-md-2 control-label" for="profileNewPassword">Password Baru</label>
+				                            <div class="col-md-3">
+				                                <input type="password" class="form-control" name="new_password">
+				                            </div>
+				                        </div>
+				                        <div class="form-group">
+				                            <label class="col-md-2 control-label" for="profileNewPasswordRepeat">Ulangi Password</label>
+				                            <div class="col-md-3">
+				                                <input type="password" class="form-control" name="repeat_password">
+				                            </div>
+				                        </div>
+				                    </fieldset>
+				                    <div class="panel-footer">
+				                        <div class="row">
+				                            <div class="col-md-9 col-md-offset-3">
+				                                <button type="submit" class="btn btn-primary" name="change_password" value="1">Simpan</button>
+				                                <a href="<?php echo base_url('admin'); ?>" class="btn btn-default">Cancel</a>
+				                            </div>
+				                        </div>
+				                    </div>
+				                </form>   										
 
 
 

@@ -11,10 +11,18 @@ class site_configuration extends CI_Controller {
 	}
 
     public function edit(){
-
+    	$user_sess = $this->function_lib->get_user_level();
+        $level = isset($user_sess['level']) ? $user_sess['level'] : "";
+        $id_user = isset($user_sess['id_user']) ? $user_sess['id_user'] : "";
+        $data['id_user'] = $id_user;
+        $data['level'] = $level;
     	if ($this->input->post()) {
             foreach ($_POST as $key => $value) {
                 $this->Msite_configuration->edit($key,$value);
+                if ($key == "aset_jenis_hak") {
+                	$jenisHakStr = "'" . str_replace(",", "','", $value) . "'";
+                	$this->Msite_configuration->editJenisHak($jenisHakStr);
+                }
             }
 			redirect(base_url('pengaturan/edit?status=200&msg='.base64_encode("Berhasil edit").''));
     	}

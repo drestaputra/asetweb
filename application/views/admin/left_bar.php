@@ -82,6 +82,14 @@
 											<span>Artikel</span>
 										</a>
 									</li>	
+									<li <?php if (isset($url1) AND trim($url1)!="" AND $url1=="pengaturan"): ?>
+										 class="nav-active"
+									<?php endif ?>>
+										<a href="<?php echo base_url('pengaturan/edit'); ?>">
+											<i class="fa fa-cog" aria-hidden="true"></i>
+											<span>Pengaturan</span>
+										</a>
+									</li>	
 									
 									
 									

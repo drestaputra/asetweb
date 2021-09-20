@@ -67,16 +67,16 @@
 
 				<section role="main" class="content-body">
 					<header class="page-header">
-						<h2>Pinjaman</h2>
+						<h2>Aset</h2>
 					
 						<div class="right-wrapper pull-right">
 							<ol class="breadcrumbs">
 								<li>
-									<a href="index.html">
+									<a href="<?php echo base_url(); ?>">
 										<i class="fa fa-home"></i>
 									</a>
 								</li>
-								<li><span>Pinjaman</span></li>
+								<li><span>Aset</span></li>
 							</ol>
 					
 							<a class="sidebar-right-toggle" ><i class="fa fa-chevron-left"></i></a>
@@ -95,7 +95,7 @@
 					<div class="panel panel-default">
 
                         <div class="panel-heading">
-                            <h3 class="panel-title">Data Pinjaman</h3>
+                            <h3 class="panel-title">Data Aset</h3>
                         </div>
 						<div class="panel-body">
                             <div class="alert " style="display: none;">
@@ -121,78 +121,6 @@
 		<script src="<?php echo base_url(); ?>assets/vendor/jquery-ui/js/jquery-ui-1.10.4.custom.js"></script>
 		<script src="<?php echo base_url(); ?>assets/vendor/jquery-ui-touch-punch/jquery.ui.touch-punch.js"></script>
 		<script src="<?php echo base_url(); ?>assets/vendor/jquery-appear/jquery.appear.js"></script>
-		  <script type="text/javascript">
-			<?php if ((isset($level) AND ($level=="owner" OR $level=="kasir") AND $state_data != "edit")): ?>
-				$(document).ready(function() {        	
-				var selectedValue = <?php echo isset($id_user) ? $id_user : 0; ?>;
-					// alert('selectedValue'+selectedValue);
-					// console.log('post:'+'ajax_extension/id_kolektor/id_owner/9');
-					$.post('ajax_extension/id_kolektor/id_owner/'+encodeURI(selectedValue), {}, function(data) {
-					//alert('data'+data);
-					var $el = $('#field-id_kolektor');
-						  var newOptions = data;
-						  $el.empty(); // remove old options
-						  $el.append($('<option></option>').attr('value', '').text(''));
-						  $.each(newOptions, function(key, value) {						  	
-						    $el.append($('<option></option>')
-						       .attr('value', key).text(value));
-						    });
-						  //$el.attr('selectedIndex', '-1');						  
-						  $el.chosen().trigger('chosen:updated');
-
-    	  			},'json');
-    	  			$('#field-id_kolektor').change();
-    	  	});		
-			<?php else: ?>					
-			$(document).ready(function() {        		
-				$('#field-id_owner').change(function() {									
-					var selectedValue = $('#field-id_owner').val();					
-					// alert('selectedValue'+selectedValue);
-					//alert('post:'+'ajax_extension/id_kolektor/id_owner/'+encodeURI(selectedValue.replace(/\//g,'_agsl_')));
-					$.post('ajax_extension/id_kolektor/id_owner/'+encodeURI(selectedValue.replace(/\//g,'_agsl_')), {}, function(data) {
-					//alert('data'+data);
-					var $el = $('#field-id_kolektor');
-						  var newOptions = data;
-						  $el.empty(); // remove old options
-						  $el.append($('<option></option>').attr('value', '').text(''));
-						  $.each(newOptions, function(key, value) {						  	
-						    $el.append($('<option></option>')
-						       .attr('value', key).text(value));
-						    });
-						  //$el.attr('selectedIndex', '-1');
-						  $el.chosen().trigger('chosen:updated');
-
-    	  			},'json');
-    	  			$('#field-id_kolektor').change();
-				});
-			});
-
-			<?php endif ?>					
-        	
-			$(document).ready(function() {
-				$('#field-id_kolektor').change(function() {					
-					var selectedValue = $('#field-id_kolektor').val();
-					// alert('selectedValue'+selectedValue);
-					//alert('post:'+'ajax_extension/id_kolektor/id_owner/'+encodeURI(selectedValue.replace(/\//g,'_agsl_')));
-					$.post('ajax_extension/id_nasabah/id_kolektor/'+encodeURI(selectedValue.replace(/\//g,'_agsl_')), {}, function(data) {
-					//alert('data'+data);
-					var $el = $('#field-id_nasabah');
-						  var newOptions = data;
-						  $el.empty(); // remove old options
-						  $el.append($('<option></option>').attr('value', '').text(''));
-						  $.each(newOptions, function(key, value) {						  	
-						    $el.append($('<option></option>')
-						       .attr('value', key).text(value));
-						    });
-						  //$el.attr('selectedIndex', '-1');
-						  $el.chosen().trigger('chosen:updated');
-
-    	  			},'json');
-    	  			$('#field-id_nasabah').change();
-				});
-			});
-			
-        </script>
 		
 		<script src="<?php echo base_url(); ?>assets/javascripts/theme.js"></script>
 		
@@ -202,48 +130,9 @@
 		<!-- Theme Initialization Files -->
 		<script src="<?php echo base_url(); ?>assets/javascripts/theme.init.js"></script>		
 		<!-- flexigrid -->		
-		<script type="text/javascript">
-			$(function() {
-				
-			$("th[data-order-by=Kekurangan]").prop("onclick", null).off("click");
-			$(".searchable-input[name=Kekurangan]").hide();			
-			$("th[data-order-by=biaya_admin]").prop("onclick", null).off("click");
-			$(".searchable-input[name=biaya_admin]").hide();			
-			$("th[data-order-by=angsuran]").prop("onclick", null).off("click");
-			$(".searchable-input[name=angsuran]").hide();			
-			
-			});
-		</script>
 		
-		<?php if ($this->uri->segment(3)=="add"): ?>
-		<script type="text/javascript">		
-			$( ".id_nasabah_form_group" ).after( "<div class='detail_id_nasabah'></div>" );		
-			$('#field-id_kolektor').empty();
-			$('#field-id_kolektor').chosen().trigger('chosen:updated');
-			$('#field-id_kolektor').change();
-			$('#field-id_nasabah').empty();
-			$('#field-id_nasabah').chosen().trigger('chosen:updated');
-			$('#field-id_nasabah').change();
-
-			$("#field-id_nasabah").on("change",function(){
-				var id_nasabah = $(this).val();
-				if (id_nasabah != null) {
-					$.ajax({
-						url: '<?php echo base_url('pinjaman/get_detail_pinjaman_lama/') ?>'+id_nasabah,
-						type: 'GET',
-						dataType: 'JSON',
-						success: function(response){
-							if (response.status == 200) {
-								$(".detail_id_nasabah").html('<div class="form-group"><label class="col-sm-2 control-label">Detail Pinjaman Belum Lunas</label><div class="col-sm-5"><div class="panel panel-warning"><div class="panel-body"><table class="table table-bordered"><tr><th>Angsuran</th><td>: Rp. '+response.jumlah_perangsuran+' X '+response.lama_angsuran+'/'+response.periode_angsuran+'</td></tr><tr><th>Jumlah terbayar</th><td>: Rp. '+response.jumlah_terbayar+'</td></tr><tr><th>Jumlah Pinjaman</th><td>: Rp. '+response.jumlah_pinjaman_setelah_bunga+'</td></tr><tr><th>Kurang</th><td>: Rp. '+parseFloat(parseFloat(response.jumlah_pinjaman_setelah_bunga)-parseFloat(response.jumlah_terbayar))+'</td></tr></table></div></div></div><div class="col-sm-4"><div class="alert alert-warning"><p>Apabila terjadi pinjaman dalam masa angsuran pinjaman berjalan maka Jumlah Pinjaman berikutnya dapat dipotong untuk menutup angsuran berjalannya.</p></div></div></div>');
-							}else{
-								$(".detail_id_nasabah").html("");
-							}
-						}					
-					})
-				}
-			});
-		</script>
-		<?php endif ?>
+		
+		
 	
           
 	</body>

@@ -72,7 +72,7 @@
 						<div class="right-wrapper pull-right">
 							<ol class="breadcrumbs">
 								<li>
-									<a href="index.html">
+									<a href="<?php echo base_url(); ?>">
 										<i class="fa fa-home"></i>
 									</a>
 								</li>
@@ -127,6 +127,7 @@
 
 			$(document).ready(function() {
 				<?php if (isset($state) AND $state=="add"): ?>
+
 					$('#field-kabupaten').empty();
 					$('#field-kabupaten').chosen().trigger('chosen:updated');
 					$('#field-kabupaten').change();
@@ -134,7 +135,7 @@
 					$('#field-kecamatan').chosen().trigger('chosen:updated');
 					$('#field-kecamatan').change();
 				<?php else: ?>
-					$("[name=s08bc8536]").hide();
+					$("[name=s8a1ebb1f]").hide();
 					$("[name='Ubah Password']").hide();
 				<?php endif ?>
 				$('#field-provinsi').change(function() {					

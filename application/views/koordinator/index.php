@@ -4,7 +4,7 @@
 
 		<!-- Basic -->
 		<meta charset="UTF-8">
-		<title>Koordinator | <?php echo function_lib::get_config_value('website_name'); ?></title>
+		<title>Pengurus Barang | <?php echo function_lib::get_config_value('website_name'); ?></title>
 		<meta name="keywords" content="Dashboard Admin - <?php echo function_lib::get_config_value('website_name'); ?>" />
 		<meta name="description" content="<?php echo function_lib::get_config_value('website_seo'); ?>">
 		<meta name="author" content="Drestaputra - Inolabs">
@@ -67,16 +67,16 @@
 
 				<section role="main" class="content-body">
 					<header class="page-header">
-						<h2>Koordinator</h2>
+						<h2>Pengurus Barang</h2>
 					
 						<div class="right-wrapper pull-right">
 							<ol class="breadcrumbs">
 								<li>
-									<a href="index.html">
+									<a href="<?php echo base_url(); ?>">
 										<i class="fa fa-home"></i>
 									</a>
 								</li>
-								<li><span>Koordinator</span></li>
+								<li><span>Pengurus Barang</span></li>
 							</ol>
 					
 							<a class="sidebar-right-toggle" ><i class="fa fa-chevron-left"></i></a>
@@ -92,7 +92,7 @@
 					<div class="panel panel-default">
 
                         <div class="panel-heading">
-                            <h3 class="panel-title">Data Koordinator</h3>
+                            <h3 class="panel-title">Data Pengurus Barang</h3>
                         </div>
 						<div class="panel-body">
                             <div class="alert " style="display: none;">

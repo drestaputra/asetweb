@@ -57,7 +57,7 @@
 					<div class="right-wrapper pull-right">
 						<ol class="breadcrumbs">
 							<li>
-								<a href="<?php echo base_url('admin/dashboard'); ?>">
+								<a href="<?php echo base_url(); ?>">
 									<i class="fa fa-home"></i>
 								</a>
 							</li>

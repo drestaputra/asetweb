@@ -108,7 +108,7 @@ class Madmin extends CI_Model {
         if ($this->form_validation->run() == TRUE) {            
                 if (!empty($this->session->userdata('admin'))) {
                     $id_admin = $this->session->userdata('admin')['id_admin'];                    
-                    $id_admin = $this->function_lib->get_one('id_admin','admin','password='.$this->db->escape($oldPasswordHash).'');                    
+                    $id_admin = $this->function_lib->get_one('id_admin','admin','password='.$this->db->escape($oldPasswordHash).' AND id_admin='.$this->db->escape($id_admin).'');                    
                 }
 
                 if (floatval($id_admin) != 0) {     

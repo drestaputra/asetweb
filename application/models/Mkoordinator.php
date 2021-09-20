@@ -17,11 +17,12 @@ class Mkoordinator extends CI_Model {
 	        $oldPasswordHash = hash('sha512',$old_password . config_item('encryption_key'));        
 	        $this->form_validation->set_rules('old_password', 'Password Lama', 'required');  
         }
+        
         $this->form_validation->set_rules('repeat_password', 'Konfirmasi Password', 'required');  
         if ($this->form_validation->run() == TRUE) {            
 		    	if (!empty($this->session->userdata('koordinator'))) {
                 	$id_koordinator = $this->session->userdata('koordinator')['id_koordinator'];                    
-                    $id_koordinator = $this->function_lib->get_one('id_koordinator','koordinator','password_koordinator='.$this->db->escape($oldPasswordHash).'');
+                    $id_koordinator = $this->function_lib->get_one('id_koordinator','koordinator','password_koordinator='.$this->db->escape($oldPasswordHash).' AND id_koordinator='.$this->db->escape($id_koordinator).'');
 		    	}
                 if (floatval($id_koordinator) != 0) {     
                     $columnUpdate = array(
@@ -55,7 +56,7 @@ class Mkoordinator extends CI_Model {
     }
     function cekLogin(){
         $pwd = $this->input->post('pwd',TRUE);
-        $username = $this->input->post('username',TRUE);
+        $username = $this->input->post('username_koordinator',TRUE);
         $password = hash('sha512',$pwd . config_item('encryption_key'));        
         $this->db->where('username_koordinator', $username);
         $this->db->where('password_koordinator', $password);
@@ -75,31 +76,31 @@ class Mkoordinator extends CI_Model {
         // $function_lib=$this->load->library('function_lib');        
         
         // exit();
-        $username = $this->input->post('username',TRUE);        
-        $email = $this->input->post('email',TRUE);        
+        $username = $this->input->post('username_koordinator',TRUE);        
+        $email_koordinator = $this->input->post('email_koordinator',TRUE);        
         if ($id_koordinator==0) {            
         $id_koordinator = isset($this->session->userdata('koordinator')['id_koordinator']) ? $this->session->userdata('koordinator')['id_koordinator'] : null;
         }
         // dapatkan data untuk edit
-        $usernameOri = $this->function_lib->get_one('username','koordinator','id_koordinator="'.$id_koordinator.'"');        
-        $emailOri = $this->function_lib->get_one('email','koordinator','id_koordinator="'.$id_koordinator.'"');                
-        $is_unique = ($username != $usernameOri)? '|is_unique[koordinator.username]':'';
-        $is_uniqueEmail = ($email != $emailOri)? '|is_unique[koordinator.email]':'';
+        $usernameOri = $this->function_lib->get_one('username_koordinator','koordinator','id_koordinator="'.$id_koordinator.'"');        
+        $email_koordinatorOri = $this->function_lib->get_one('email_koordinator','koordinator','id_koordinator="'.$id_koordinator.'"');                
+        $is_unique = ($username != $usernameOri)? '|is_unique[koordinator.username_koordinator]':'';
+        $is_uniqueEmail = ($email_koordinator != $email_koordinatorOri)? '|is_unique[koordinator.email_koordinator]':'';
         
         $this->load->library('form_validation');
-        $this->form_validation->set_rules('username', 'Username', 'required'.$is_unique,
+        $this->form_validation->set_rules('username_koordinator', 'Username', 'required'.$is_unique,
              array(                
                 'is_unique'     => 'Username sudah terpakai.'
             )
         );        
-        $this->form_validation->set_rules('email', 'Email', 'required'.$is_uniqueEmail,
+        $this->form_validation->set_rules('email_koordinator', 'Email', 'required'.$is_uniqueEmail,
             array(                
                 'is_unique'     => 'Email sudah terpakai.'
             )
         );  
         // validasi tambah
         if ($this->input->post('tambah')) {
-            $this->form_validation->set_rules('status', 'Status', 'required',
+            $this->form_validation->set_rules('status_koordinator', 'Status', 'required',
                 array(                
                     'required'     => '%s masih kosong.'
                 )
@@ -121,9 +122,9 @@ class Mkoordinator extends CI_Model {
             $status=200;
             $msg="Berhasil";
             $error = array(
-                "username" => form_error('username'),
-                "email" => form_error('email'),
-                "status" => form_error('status'),
+                "username_koordinator" => form_error('username_koordinator'),
+                "email_koordinator" => form_error('email_koordinator'),
+                "status_koordinator" => form_error('status_koordinator'),
                 "password" => form_error('password'),
                 "conf_password" => form_error('conf_password'),
             );
@@ -131,9 +132,9 @@ class Mkoordinator extends CI_Model {
             $status=500;
             $msg=validation_errors(' ',' ');
             $error = array(
-                "username" => form_error('username'),
-                "email" => form_error('email'),
-                "status" => form_error('status'),
+                "username_koordinator" => form_error('username_koordinator'),
+                "email_koordinator" => form_error('email_koordinator'),
+                "status_koordinator" => form_error('status_koordinator'),
                 "password" => form_error('password'),
                 "conf_password" => form_error('conf_password'),
             );
@@ -143,31 +144,23 @@ class Mkoordinator extends CI_Model {
     
 
     function editProfil(){
-        $username = $this->input->post('username',TRUE);        
-        $email = $this->input->post('email',TRUE);        
-        $id_opd_koordinator = $this->input->post('id_opd_koordinator',TRUE);        
+        $username_koordinator = $this->input->post('username_koordinator',TRUE);        
+        $email_koordinator = $this->input->post('email_koordinator',TRUE);        
         $idKoordinator = $this->session->userdata('koordinator')['id_koordinator'];                
         $validasi = $this->validasi();      
         $status = 500;
         $msg = "";
         if ($validasi['status']==200) {
-            // cek opd apakah sudah dimiliki koordinator lain
-            $cekIdOpd = $this->function_lib->get_one('id_opd_koordinator', 'koordinator', 'id_opd_koordinator IN (SELECT id_opd FROM opd WHERE status_opd!="deleted") AND id_opd_koordinator = '.$this->db->escape($id_opd_koordinator).' AND id_koordinator !='.$this->db->escape($idKoordinator).' ');
-            if (!empty($cekIdOpd)) {
-                $status = 500;
-                $msg = "OPD ini sudah digunakan oleh koordinator lain, silahkan pilih OPD lain atau hubungi Super Koordinator untuk mengubah OPD";
-                
-            }else{
-                $columnUpdate = array(
-                    "email"=> $email,
-                    "username"=> $username,
-                    "id_opd_koordinator" => $id_opd_koordinator
-                );
-                $this->db->where('id_koordinator="'.$idKoordinator.'"');
-                $this->db->update('koordinator', $columnUpdate);
-                $status = 200;
-                $msg = "Berhasil Update";
-            }
+    
+            $columnUpdate = array(
+                "email_koordinator"=> $email_koordinator,
+                "username_koordinator"=> $username_koordinator,
+            );
+            $this->db->where('id_koordinator="'.$idKoordinator.'"');
+            $this->db->update('koordinator', $columnUpdate);
+            $status = 200;
+            $msg = "Berhasil Update";
+        
         }else{
             $status = $validasi['status'];
             $msg = $validasi['msg'];

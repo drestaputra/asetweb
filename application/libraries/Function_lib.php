@@ -300,6 +300,10 @@ class Function_lib {
             $viewMenu = $lib->CI->load->view('super_admin/left_bar', null, FALSE);
         }else if (!empty($lib->CI->session->userdata('admin'))) {
             $viewMenu = $lib->CI->load->view('admin/left_bar', null, FALSE);        
+        }else if (!empty($lib->CI->session->userdata('koordinator'))) {
+            $viewMenu = $lib->CI->load->view('koordinator/left_bar', null, FALSE);        
+        }else if (!empty($lib->CI->session->userdata('pengurus_barang'))) {
+            $viewMenu = $lib->CI->load->view('pengurus_barang/left_bar', null, FALSE);        
         }
         return $viewMenu;
     }
@@ -309,6 +313,10 @@ class Function_lib {
             $viewMenu = $lib->CI->load->view('super_admin/header', null, FALSE);
         }else if (!empty($lib->CI->session->userdata('admin'))) {
             $viewMenu = $lib->CI->load->view('admin/header', null, FALSE);        
+        }else if (!empty($lib->CI->session->userdata('koordinator'))) {
+            $viewMenu = $lib->CI->load->view('koordinator/header', null, FALSE);        
+        }else if (!empty($lib->CI->session->userdata('pengurus_barang'))) {
+            $viewMenu = $lib->CI->load->view('pengurus_barang/header', null, FALSE);        
         }
         return $viewMenu;
     }
@@ -392,10 +400,29 @@ class Function_lib {
                 "username"=>isset($sess['username']) ? $sess['username'] : "",
                 "id_user"=>isset($sess['id_admin']) ? $sess['id_admin'] : "",
             );
+        }else if (!empty($this->CI->session->userdata('koordinator'))) {
+            $sess = $this->CI->session->userdata('koordinator');            
+            $user = array(
+                "level"=>"koordinator",
+                "username"=>isset($sess['username_koordinator']) ? $sess['username_koordinator'] : "",
+                "id_user"=>isset($sess['id_koordinator']) ? $sess['id_koordinator'] : "",
+            );
+        }else if (!empty($this->CI->session->userdata('pengurus_barang'))) {
+            $sess = $this->CI->session->userdata('pengurus_barang');            
+            $user = array(
+                "level"=>"pengurus_barang",
+                "username"=>isset($sess['username_pengurus_barang']) ? $sess['username_pengurus_barang'] : "",
+                "id_user"=>isset($sess['id_pengurus_barang']) ? $sess['id_pengurus_barang'] : "",
+            );
         }
         return $user;
     }
      function remove_string_and_substr2($string){
         return substr(preg_replace('/[^0-9]/', '', $string), 0, -2);
     }
+    // remove except alphanumeric and comma
+    function remove_forbid_chars($string){
+        return preg_replace('/[^ 0-9,a-zA-Z]/', '', $string);
+    }
+
 }
