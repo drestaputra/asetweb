@@ -90,7 +90,7 @@
 						
 					</div>
 					<?php if ($state_data == "list" OR $state_data == "success"): ?>
-						<!-- di grid data -->
+						<a href="" class="btn btn-success"><i class="fa fa-file-excel-o"></i> Import Data</a>
 					<?php endif ?>
 					<div class="panel panel-default">
 
@@ -122,14 +122,48 @@
 		<script src="<?php echo base_url(); ?>assets/vendor/jquery-ui-touch-punch/jquery.ui.touch-punch.js"></script>
 		<script src="<?php echo base_url(); ?>assets/vendor/jquery-appear/jquery.appear.js"></script>
 		
+		<script type="text/javascript">
+
+
+			$(document).ready(function() {
+				<?php if (isset($state) AND $state=="add"): ?>
+					$('#field-id_kecamatan').empty();
+					$('#field-id_kecamatan').chosen().trigger('chosen:updated');
+					$('#field-id_kecamatan').change();
+					$('#field-id_desa').empty();
+					$('#field-id_desa').chosen().trigger('chosen:updated');
+					$('#field-id_desa').change();
+				<?php endif ?>
+				
+			$('#field-id_kecamatan').change(function() {
+					var selectedValue = $('#field-id_kecamatan').val();		
+					$.post('ajax_extension/id_desa/id_kecamatan/'+encodeURI(selectedValue.replace(/\//g,'_agsl_')), {}, function(data) {
+					var $el = $('#field-id_desa');
+						  var newOptions = data;
+						  $el.empty(); // remove old options
+						  $el.append($('<option></option>').attr('value', '').text(''));
+						  $.each(newOptions, function(key, value) {
+						    $el.append($('<option></option>')
+						       .attr('value', key).text(value));
+						    });
+						  //$el.attr('selectedIndex', '-1');
+						  $el.chosen().trigger('chosen:updated');
+
+    	  			},'json');
+    	  			$('#field-id_desa').change();
+				});
+			});
+			
+
+			
+		</script>
 		<script src="<?php echo base_url(); ?>assets/javascripts/theme.js"></script>
-		
-		<!-- Theme Custom -->
-		<script src="<?php echo base_url(); ?>assets/javascripts/theme.custom.js"></script>
-		
-		<!-- Theme Initialization Files -->
-		<script src="<?php echo base_url(); ?>assets/javascripts/theme.init.js"></script>		
-		<!-- flexigrid -->		
+
+	<!-- Theme Custom -->
+	<script src="<?php echo base_url(); ?>assets/javascripts/theme.custom.js"></script>
+
+	<!-- Theme Initialization Files -->
+	<script src="<?php echo base_url(); ?>assets/javascripts/theme.init.js"></script>
 		
 		
 		

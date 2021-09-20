@@ -89,6 +89,7 @@
                             
 						
 					</div>
+
 					<?php if (isset($level) && !empty($level) && trim($level) == "admin" && isset($isNotHaveOpd) AND $isNotHaveOpd): ?>
 						<div class="panel panel-warning">
 							<div class="panel-body bg-warning">
@@ -103,6 +104,14 @@
                             <h3 class="panel-title">Organisasi Perangkat Desa</h3>
                         </div>
 						<div class="panel-body">
+							<?php if ($state_data == "list" OR $state_data == "success"): ?>
+								<div class="row">
+									<div class="col-md-3 pull-right">
+										<a href="" class="btn btn-success pull-right"><i class="fa fa-file-excel-o"></i> Import Data</a>
+									</div>
+								</div>
+								<br>
+							<?php endif ?>
                             <div class="alert " style="display: none;">
                                 <p class="msg"></p>
                             </div>

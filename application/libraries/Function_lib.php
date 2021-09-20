@@ -186,6 +186,21 @@ class Function_lib {
         }
         else return null;
     }  
+    /**
+     * fungsi standar untuk get 1 baris data     
+     * @param string $table nama table
+     * @param string $where parameter where
+     */
+    function get_row_select_by($select = '*' ,$table='',$where='')
+    {
+        $result = $this->CI->db->query("SELECT ".$select." FROM ".$table." WHERE ".$where." LIMIT 1");
+        if($result->num_rows() > 0)
+        {
+            $row = $result->row_array();
+            return $row;
+        }
+        else return null;
+    }  
 
     
 

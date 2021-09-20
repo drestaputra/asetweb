@@ -21,13 +21,13 @@ class Mmail extends CI_Model {
 	$mail->Host = "ssl://mail.siana.id"; //host mail server	
 	$mail->SMTPAuth = true;                          	
 	$mail->Username = "kontak@siana.id";   //nama-email smtp          
-	$mail->Password = "cs123arta!@#kita";           //password email smtp		
+	$mail->Password = "@Siana2021";           //password email smtp		
 	$mail->SMTPSecure = "ssl";                           
 	//Set TCP port to connect to 
 	$mail->Port = 465;                                   
 
-	$mail->From = "cs@artakita.com"; //email pengirim
-	$mail->FromName = "Customer Service Artakita"; //nama pengirim
+	$mail->From = "kontak@siana.id"; //email pengirim
+	$mail->FromName = "Kontak Siana"; //nama pengirim
 
 	 $mail->addAddress($to, $to_name); //email penerima
 
@@ -36,7 +36,6 @@ class Mmail extends CI_Model {
 	$mail->Subject = $subjek; //subject
     $mail->Body    = $pesan; //isi email
         $mail->AltBody = "Email"; //body email (optional)
-
         if(!$mail->send()) 
         {        	
         	return $mail->ErrorInfo;        	

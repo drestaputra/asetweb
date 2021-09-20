@@ -22,6 +22,15 @@ class Mandroid extends CI_Model {
 			$columnUpdatePassword = array(
 				"password"=> $pwd_hashed
 			);
+			if ($jenis_user == "koordinator") {
+				$columnUpdatePassword = array(
+					"password_koordinator"=> $pwd_hashed
+				);
+			}else if($jenis_user == "pengurus_barang"){
+				$columnUpdatePassword = array(
+					"password_pengurus_barang"=> $pwd_hashed
+				);
+			}
 			$this->db->where('id_'.$jenis_user, $id_user);
 			$this->db->update($jenis_user, $columnUpdatePassword);
 		}		

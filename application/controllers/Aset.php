@@ -32,7 +32,27 @@ class Aset extends CI_Controller {
         // $crud->unset_add_fields('status_modal_usaha','modal_input_by');        
         // $crud->unset_edit();        
         // $crud->unset_texteditor(array('deskripsi_paket','full_text'));                
-        // $crud->required_fields('jumlah_modal_usaha','catatan_modal_usaha');       
+        // $crud->required_fields('jumlah_modal_usaha','catatan_modal_usaha'); 
+
+
+        // mengurangi beban load desa
+        $action = $crud->getState();
+        $where_desa = null;
+        if (!empty($action) AND $action=="add") {
+            $where_desa= "id_kecamatan<10";
+        }else if(!empty($action) AND $action=="edit"){
+            $id = $this->uri->segment(4,0);            
+            $asetArr = $this->function_lib->get_row_select_by('id_kecamatan,id_desa','aset','id_aset='.$this->db->escape($id).'');
+            $id_kecamatan = isset($asetArr['id_kecamatan']) ? $asetArr['id_kecamatan'] : 0;
+            $id_desa = isset($asetArr['id_desa']) ? $asetArr['id_desa'] : 0;
+            $where_desa = 'id_kecamatan ="'.$id_kecamatan.'"';
+        }
+        
+        $crud->set_relation('id_kecamatan','kecamatan','nama', ' id_kabupaten = "3305"');
+        $crud->set_relation_dependency('id_kecamatan','kabupaten','id_kabupaten');
+        $crud->set_relation('id_desa','desa','nama', $where_desa);        
+        $crud->set_relation_dependency('id_desa','kecamatan','id_kecamatan');
+        
 
         if ($level == "pengurus_barang") {
             $id_admin = $this->function_lib->get_one('id_admin_pengurus_barang', 'pengurus_barang','id_pengurus_barang='.$this->db->escape($id_user).'');
@@ -43,6 +63,8 @@ class Aset extends CI_Controller {
             $crud->where('jea67d6ad.id_opd_admin', $id_opd_admin);
         }else if($level == "koordinator"){
 
+        }else if($level == "super_admin"){
+            $crud->set_relation('id_opd_aset','admin','id_opd_admin,(SELECT label_opd FROM opd where id_opd=id_opd_admin)', 'status!="deleted" ');
         }
 
 

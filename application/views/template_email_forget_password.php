@@ -24,7 +24,7 @@
                 <table align="center" border="0" cellpadding="0" cellspacing="0" width="650" style="border: 1px solid #cccccc; border-collapse: collapse;">
                     <tr>
                         <td align="center" bgcolor="#2d2d2d" style="padding: 15px 0 10px 0; color: #153643; font-size: 28px; font-weight: bold; font-family: Arial, sans-serif;">
-                            <img src="<?php echo $base_url.'assets/images/logo.png'; ?>" alt="Logo Koperasi Artakita" width="200" height="200" style="display: block;" />
+                            <img src="<?php echo $base_url.'assets/images/logo.png'; ?>" alt="Logo Siana" width="200" height="200" style="display: block;" />
                         </td>
                     </tr>
                     <tr>
@@ -32,14 +32,14 @@
                             <table border="0" cellpadding="0" cellspacing="0" width="100%">
                                 <tr>
                                     <td style="color: #153643; font-family: Arial, sans-serif; font-size: 24px;">
-                                        <b>Email Notifikasi Forget Password!</b>
+                                        <b>Email Notifikasi Lupa!</b>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>
-                                        Hai member Artakita,
+                                        Hai member Siana,
                                         <br>
-                                        Kami telah menerima permintaan ubah password untuk akun kamu di <a href="<?php echo $base_url; ?>">Koperasi Artakita</a>. Berikut ini datanya :
+                                        Kami telah menerima permintaan ubah password untuk akun kamu di <a href="<?php echo $base_url; ?>">Siana</a>. Berikut ini datanya :
                                     </td>
                                 </tr>
                                 <tr>
@@ -56,7 +56,7 @@
                                             	<td><center><a href="<?php echo $base_url ?>lupass?kode=<?php echo $token; ?>"><?php echo $base_url."lupass?kode=".$token."" ?></a>			</center></td>
                                             </tr>                          
                                             <tr class="small">
-                                                <td><p>Email berikut merupakan notifikasi yang masuk ketika ada pengguna meminta perubahan password di Aplikasi Android Koperasi Artakita. Abaikan jika ini bukan Anda</p></td>                                                
+                                                <td><p>Email berikut merupakan notifikasi yang masuk ketika ada pengguna meminta perubahan password di Aplikasi Android Siana. Abaikan jika ini bukan Anda</p></td>                                                
                                             </tr>
                                         </table>
                                     </td>
@@ -69,7 +69,7 @@
                             <table border="0" cellpadding="0" cellspacing="0" width="100%">
                                 <tr>
                                     <td style="color: #ffffff; font-family: Arial, sans-serif; font-size: 14px;" width="75%">
-                                        &reg; Koperasi Artakita <?php echo date('Y'); ?><br/>
+                                        &reg; Siana <?php echo date('Y'); ?><br/>
                                         
                                     </td>
                                     
