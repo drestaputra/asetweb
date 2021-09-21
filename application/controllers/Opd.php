@@ -1,6 +1,12 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
+
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Reader\Xls;
+
+// use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+
 class Opd extends CI_Controller {
 
 	public function __construct()
@@ -8,7 +14,7 @@ class Opd extends CI_Controller {
 		parent::__construct();
 		//Do your magic here
 		$this->function_lib->cek_auth(array("super_admin","admin"));
-		$this->load->library(array('grocery_CRUD','ajax_grocery_crud'));   
+		$this->load->library(array('grocery_CRUD','ajax_grocery_crud','PhpOffice\PhpSpreadsheet\Spreadsheet'));   
 	}		
  
     public function index() {
@@ -58,6 +64,7 @@ class Opd extends CI_Controller {
         // $crud->change_field_type('stat', 'dropdown', array('0' => 'Tidak','1' => 'Ya'));
                
         $crud->required_fields('nama_opd','label_opd');                
+        $crud->unique_fields(array('nama_opd'));
         $crud->callback_delete(array($this,'delete_data'));
         $crud->unset_texteditor(array('alamat_opd','full_text'));
         $crud->unique_fields(['label_opd']);        
@@ -70,6 +77,62 @@ class Opd extends CI_Controller {
         $this->load->view('opd/index', $data, FALSE);
 
     }   
+    public function import(){
+        $this->load->model('Mopd');
+
+        
+        if ($this->input->post('preview')) {
+            $upload = $this->Mopd->upload();
+            if (isset($upload['status']) AND $upload['status'] == 200) {
+                $filename = (isset($upload['data']['file_name'])) ? $upload['data']['file_name'] : "";
+                redirect('opd/preview_import/'.$filename);
+            }else{
+                $msg = isset($upload['msg']) ? $upload['msg'] : "";
+                redirect('opd/import?status=500&msg='.base64_encode($msg));
+            }
+            
+        }
+        $this->load->view('opd/import', null, FALSE);
+    }
+    public function preview_import($filename = ""){
+        $this->load->model('Mopd');
+        $path = "./assets/excel/opd/";
+        if (empty($filename)) {
+            redirect('opd/import?status=500&msg='.base64_encode("File Excel kosong"));
+            return;
+        }else if(!file_exists($path.$filename)){
+            redirect('opd/import?status=500&msg='.base64_encode("file import tidak ditemukan, silahkan upload ulang"));
+            return;
+        }
+        if (trim($this->input->post('save')) == "1") {
+            // simpan data excel ke database
+            $save = $this->Mopd->save_import($filename);
+            $status = isset($save['status']) ? $save['status'] : 500;
+            $msg = isset($save['msg']) ? $save['msg'] : 500;
+            if ($status == 200) {
+                redirect("opd/index?status=200&msg=".base64_encode($msg));
+            }else{
+                redirect("opd/preview_import/".$filename."?status=500&msg=".base64_encode($msg));
+            }
+        }
+        
+        $reader = new PhpOffice\PhpSpreadsheet\Reader\Xlsx();
+        $spreadsheet = $reader->load($path.$filename); // Load file yang tadi diupload ke folder tmp
+        $sheet = $spreadsheet->getActiveSheet()->toArray(null, true, true, true);
+        $sheet = array_splice($sheet, 1);
+        $insertData = array();
+        foreach ($sheet as $key => $value) {
+            if (isset($value['A']) && !empty($value['A']) && isset($value['B']) && !empty($value['B'])) {
+                $insertData[$key] = $sheet[$key];
+            }
+        }
+        
+        $data['filename'] = $filename;
+        
+        $data['dataOpd'] = $insertData;
+        
+        $this->load->view('opd/preview_import', $data, FALSE);
+    }
     function setOpdAdmin($post_array,$primary_key){      
         $this->function_lib->cek_auth(array("admin"));
         $user_sess = $this->function_lib->get_user_level();

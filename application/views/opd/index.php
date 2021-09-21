@@ -107,7 +107,7 @@
 							<?php if ($state_data == "list" OR $state_data == "success"): ?>
 								<div class="row">
 									<div class="col-md-3 pull-right">
-										<a href="" class="btn btn-success pull-right"><i class="fa fa-file-excel-o"></i> Import Data</a>
+										<a href="<?php echo base_url('opd/import') ?>" class="btn btn-success pull-right"><i class="fa fa-file-excel-o"></i> Import Data</a>
 									</div>
 								</div>
 								<br>
