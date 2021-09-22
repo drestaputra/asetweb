@@ -27,6 +27,7 @@ class Aset extends CI_Controller {
         $crud->set_language('indonesian');
         
         
+        $crud->columns("nama_aset","galeri","kode_barang","register","kecamatan","desa","jenis_hak","tanggal_sertifikat","nomor_sertifikat","penggunaan","asal_perolehan","harga_perolehan","keterangan","latitude","longitude","status_aset","status_verifikasi_aset");
         $crud->unset_columns("created_by","created_by_id");
         // $crud->callback_column('jumlah_modal_usaha',array($this,'set_number_format_with_rp'));        
         // $crud->field_type('jumlah_modal_usaha','integer');
@@ -36,12 +37,15 @@ class Aset extends CI_Controller {
         // $crud->unset_texteditor(array('deskripsi_paket','full_text'));                
         // $crud->required_fields('jumlah_modal_usaha','catatan_modal_usaha'); 
 
+
         $crud->display_as('id_opd_aset','OPD')
+             ->display_as('galeri','Galeri')             
              ->display_as('id_kecamatan','Kecamatan')
-             ->display_as('id_desa','Desa')             
+             ->display_as('id_desa','Desa')
              ->display_as('tgl_berita','Tanggal')             
              ->display_as('created_datetime','Tanggal Data');
 
+        $crud->callback_column('galeri',array($this,'getGaleriUrl'));
         // mengurangi beban load desa
         $action = $crud->getState();
         $where_desa = null;
@@ -105,8 +109,12 @@ class Aset extends CI_Controller {
         $this->load->view('aset/index', $data, FALSE);
 
     }   
+    public function getGaleriUrl($value, $row){                      
+        return '<a class="btn btn-info" href="'.base_url("foto_aset/index/".$row->id_aset).'" ><i class="fa fa-eye"></i> Lihat</a>';
+    }
      public function verifikasi() {
-       $this->load->config('grocery_crud');        
+       $this->load->model('Mopd');
+        $this->load->config('grocery_crud');        
         $this->config->set_item('grocery_crud_xss_clean', false);
         $crud = new Ajax_grocery_CRUD();
         $user_sess = $this->function_lib->get_user_level();
@@ -120,7 +128,9 @@ class Aset extends CI_Controller {
         $crud->where("aset.status_verifikasi_aset = 'sedang_diverifikasi'");
         $crud->set_language('indonesian');
         
-    
+        
+        $crud->columns("nama_aset","galeri","kode_barang","register","kecamatan","desa","jenis_hak","tanggal_sertifikat","nomor_sertifikat","penggunaan","asal_perolehan","harga_perolehan","keterangan","latitude","longitude","status_aset","status_verifikasi_aset");
+        $crud->unset_columns("created_by","created_by_id");
         // $crud->callback_column('jumlah_modal_usaha',array($this,'set_number_format_with_rp'));        
         // $crud->field_type('jumlah_modal_usaha','integer');
         // $crud->field_type('tgl_modal_usaha','datetime');
@@ -130,6 +140,14 @@ class Aset extends CI_Controller {
         // $crud->required_fields('jumlah_modal_usaha','catatan_modal_usaha'); 
 
 
+        $crud->display_as('id_opd_aset','OPD')
+             ->display_as('galeri','Galeri')             
+             ->display_as('id_kecamatan','Kecamatan')
+             ->display_as('id_desa','Desa')
+             ->display_as('tgl_berita','Tanggal')             
+             ->display_as('created_datetime','Tanggal Data');
+
+        $crud->callback_column('galeri',array($this,'getGaleriUrl'));
         // mengurangi beban load desa
         $action = $crud->getState();
         $where_desa = null;
@@ -184,6 +202,7 @@ class Aset extends CI_Controller {
         $data->id_user = $id_user;
         $data->level = $level;
         $data->state_data = $crud->getState();
+        $data->dataOpd = $this->Mopd->getAllOpd();
         
         if ($data->state_data == "list" OR $data->state_data == "success") {
             
@@ -196,8 +215,8 @@ class Aset extends CI_Controller {
         $columnUpdate = array(
             'status_aset' => 'deleted'
         );
-        $this->db->where('id_modal_usaha', $primary_key);
-        return $this->db->update('modal_usaha', $columnUpdate);                
+        $this->db->where('id_aset', $primary_key);
+        return $this->db->update('aset', $columnUpdate);                
     } 
     public function set_number_format_with_rp($value, $row){
         return "Rp. ".number_format($value,'2',',','.');

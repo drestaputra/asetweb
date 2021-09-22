@@ -46,6 +46,7 @@ class Mfoto_aset extends CI_Model {
     	$dataFoto = array();
     	$cekIdAset = $this->function_lib->get_one('id_aset','aset','id_aset='.$this->db->escape($id_aset).'');
     	if (!empty($cekIdAset)) {
+            $this->db->select('id_foto_aset,id_aset,CONCAT("'.base_url('assets/foto_aset/').'", foto_aset) as foto_aset,status_foto,created_datetime');
     		$this->db->where('id_aset', $id_aset);
     		$this->db->order_by('id_foto_aset', 'desc');
     		$query = $this->db->get('foto_aset');

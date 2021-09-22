@@ -2146,3 +2146,6 @@
 .leaflet-popup-content h3{
     margin: 7px 0px!important;
 }
+.delete-multiple-confirmation .modal-backdrop {
+    height: 0px !important;
+}

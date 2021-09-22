@@ -161,11 +161,11 @@
 					    // Set latitude and longitude of the map center (required)
 					    center: [-7.667370, 109.652153],
 					    // Set the initial zoom level, values 0-18, where 0 is most zoomed-out (required)
-					    zoom: 11
+					    zoom: 13
 					});
 					var tiles = new L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 					attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-					minZoom: '15'}).addTo(map);
+					minZoom: '16'}).addTo(map);
 
 					map.on('click', function(ev) {
 					  $("[name='latitude']").val(ev.latlng.lat);

@@ -44,6 +44,7 @@
 
 		<!-- Head Libs -->
 		<script src="<?php echo base_url(); ?>assets/vendor/modernizr/modernizr.js"></script>
+		<script src="<?php echo base_url(); ?>assets/vendor/jquery/jquery.js"></script>
         <?php 
         foreach($css_files as $file): ?>
             <link type="text/css" rel="stylesheet" href="<?php echo $file; ?>" />
