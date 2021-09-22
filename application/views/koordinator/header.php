@@ -22,7 +22,7 @@
 							</figure>
 							<div class="profile-info" data-lock-name="" data-lock-email="">
 								<span class="name"><?php echo $this->session->userdata('koordinator')['username_koordinator']; ?></span>
-								<span class="role">Pengurus Barang</span>
+								<span class="role">Koordinator</span>
 							</div>
 			
 							<i class="fa custom-caret"></i>

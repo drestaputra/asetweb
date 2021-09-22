@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<title>Login Pengurus Barang</title>
+	<title>Login Koordinator</title>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta name="keywords" content="Dashboard Pengurus Barang - ArtaKita" />	
+	<meta name="keywords" content="Dashboard Koordinator - ArtaKita" />	
 	<meta name="author" content="Dresta Twas AP">
 
 	<link rel="icon" type="image/png" href="images/icons/favicon.ico"/>
@@ -33,11 +33,11 @@
 								<?php echo function_lib::response_notif($this->input->get('status'),$this->input->get('msg')); ?>
 							<?php endif ?> 
 					<span class="login100-form-title">
-						Pengurus Barang Login
+						Koordinator Login
 					</span>					
 
 					<div class="wrap-input100">
-						<input class="input100" type="text" name="username" placeholder="Username">
+						<input class="input100" type="text" name="username_koordinator" placeholder="Username">
 						<span class="focus-input100"></span>
 						<span class="symbol-input100">
 							<i class="fa fa-user" aria-hidden="true"></i>

@@ -4,7 +4,7 @@
 
 		<!-- Basic -->
 		<meta charset="UTF-8">
-		<title>Organisasi Perangkat Desa | <?php echo function_lib::get_config_value('website_name'); ?></title>
+		<title>Aset | <?php echo function_lib::get_config_value('website_name'); ?></title>
 		<meta name="keywords" content="Dashboard Admin - Koperasi Artakita" />
 		<meta name="description" content="<?php echo function_lib::get_config_value('website_seo'); ?>">
 		<meta name="author" content="Drestaputra - Inolabs">
@@ -26,6 +26,7 @@
 		<link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendor/jquery-ui/css/ui-lightness/jquery-ui-1.10.4.custom.css" />
 		<link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendor/bootstrap-multiselect/bootstrap-multiselect.css" />
 		<link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendor/morris/morris.css" />
+		<link rel="stylesheet" href="https://cdn.datatables.net/1.11.2/css/dataTables.bootstrap.min.css" />
 
 		<!-- Theme CSS -->
 		<link rel="stylesheet" href="<?php echo base_url(); ?>assets/stylesheets/theme.css" />
@@ -59,7 +60,7 @@
 
 				<section role="main" class="content-body">
 					<header class="page-header">
-						<h2>Organisasi Perangkat Desa</h2>
+						<h2>Import Aset</h2>
 					
 						<div class="right-wrapper pull-right">
 							<ol class="breadcrumbs">
@@ -68,7 +69,7 @@
 										<i class="fa fa-home"></i>
 									</a>
 								</li>
-								<li><span>Organisasi Perangkat Desa</span></li>
+								<li><span>Aset</span></li>
 							</ol>
 					
 							<a class="sidebar-right-toggle" ><i class="fa fa-chevron-left"></i></a>
@@ -82,32 +83,63 @@
 						
 					</div>
 
-					<?php if (isset($level) && !empty($level) && trim($level) == "admin" && isset($isNotHaveOpd) AND $isNotHaveOpd): ?>
-						<div class="panel panel-warning">
-							<div class="panel-body bg-warning">
-								<p>Anda BELUM mengatur OPD / SKPD, <a class="btn btn-default" href="<?php echo base_url('opd/index/add') ?>">TAMBAH OPD</a> sendiri atau GUNAKAN OPD yang sudah ada lewat <a class="btn btn-default" href="<?php echo base_url('user/admin/profil') ?>">EDIT PROFIL</a></p>
-							</div>
-						</div>
-					<?php endif ?>
 					
 					<div class="panel panel-default">
 
                         <div class="panel-heading">
-                            <h3 class="panel-title">Organisasi Perangkat Desa</h3>
+                            <h3 class="panel-title">Preview Import Data</h3>
+                            <div class="row">
+                            	<div class="col-md-12">
+                            		<form method="POST" id="save_excel">
+                            			<button name="save" value="1" class="btn btn-success pull-right"><i class="fa fa-save"></i> Simpan</button>
+                            		</form>
+                            	</div>
+                            </div>
                         </div>
+                        
 						<div class="panel-body">
-							<form method="post" enctype="multipart/form-data">
-								<a class="btn btn-success btn-sm" href="<?php echo base_url('assets/excel/sample/opd.xlsx') ?>"><i class="fa fa-file-excel-o"></i> Download Contoh Format</a>  
-								<br><br>
-								<div class="form-group">
-									<label>File Excel </label>
-									<p class="p-5 bg-warning ">HANYA Extensi .xlsx dan .xls yang diperbolehkan dan maksimal ukuran 5MB</p>
-									<input class="form-control" type="file" name="file_opd">
-								</div>
-								<div class="form-group">
-									<button type="submit" class="btn btn-primary" name="preview" value="1">Preview</button>
-								</div>
-							</form>
+							<div class="table-responsive">
+								<table class="table table-bordered table-hover table-striped table-data">
+									<thead>
+										<th>No.</th>
+										<th>Nama Aset</th>
+										<th>Kode</th>
+										<th>Register</th>
+										<th>Luas</th>
+										<th>Tahun Perolehan</th>
+										<th>Alamat</th>
+										<th>Jenis Hak</th>
+										<th>Tanggal Sertifikat</th>
+										<th>No. Sertifikat</th>
+										<th>Penggunaan</th>
+										<th>Asal Perolehan</th>
+										<th>Harga Perolehan</th>
+										<th>Keterangan</th>
+									</thead>
+									<tbody>
+										<?php foreach ($dataAset as $key => $value): ?>
+											<tr>
+												<td><?php echo $key+1; ?></td>
+												
+												<td><?php echo isset($value['B']) ? $value['B'] : "" ;  ?></td>
+												<td><?php echo isset($value['C']) ? $value['C'] : "" ;  ?></td>
+												<td><?php echo isset($value['D']) ? $value['D'] : "" ;  ?></td>
+												<td><?php echo isset($value['E']) ? $value['E'] : "" ;  ?></td>
+												<td><?php echo isset($value['F']) ? $value['F'] : "" ;  ?></td>
+												<td><?php echo isset($value['G']) ? $value['G'] : "" ;  ?></td>
+												<td><?php echo isset($value['H']) ? $value['H'] : "" ;  ?></td>
+												<td><?php echo isset($value['I']) ? $value['I'] : "" ;  ?></td>
+												<td><?php echo isset($value['J']) ? $value['J'] : "" ;  ?></td>
+												<td><?php echo isset($value['K']) ? $value['K'] : "" ;  ?></td>
+												<td><?php echo isset($value['L']) ? $value['L'] : "" ;  ?></td>
+												<td><?php echo isset($value['M']) ? $value['M'] : "" ;  ?></td>
+												<td><?php echo isset($value['N']) ? $value['N'] : "" ;  ?></td>
+												
+											</tr>
+										<?php endforeach ?>
+									</tbody>
+								</table>
+							</div>
 						</div>
 					</div>
 				</section>
@@ -122,6 +154,7 @@
 		<script src="<?php echo base_url(); ?>assets/vendor/bootstrap/js/bootstrap.js"></script>
 		<script src="<?php echo base_url(); ?>assets/vendor/nanoscroller/nanoscroller.js"></script>
 		<script src="<?php echo base_url(); ?>assets/vendor/jquery-placeholder/jquery.placeholder.js"></script>
+		<script src="<?php echo base_url(); ?>assets/vendor/datatables/datatables.js"></script>
 		
 		<!-- Specific Page Vendor -->
 		<script src="<?php echo base_url(); ?>assets/vendor/jquery-ui/js/jquery-ui-1.10.4.custom.js"></script>
@@ -135,8 +168,19 @@
 		<script src="<?php echo base_url(); ?>assets/javascripts/theme.custom.js"></script>
 		
 		<!-- Theme Initialization Files -->
-		<script src="<?php echo base_url(); ?>assets/javascripts/theme.init.js"></script>		
+		<script src="<?php echo base_url(); ?>assets/javascripts/theme.init.js"></script>	
+		<script src="https://cdn.datatables.net/1.11.2/js/dataTables.bootstrap.min.js"></script>	
+		
 		<!-- flexigrid -->		
+		<script type="text/javascript">
+			$(document).ready( function () {
+			    $('.table-data').DataTable();
+			    $("#save_excel").submit(function(event) {
+			    	var conf = confirm("Apakah Anda yakin menyimpan data Aset tersebut?");
+			    	return conf;
+			    });
+			} );
+		</script>
 
 	
           

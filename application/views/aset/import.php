@@ -4,7 +4,7 @@
 
 		<!-- Basic -->
 		<meta charset="UTF-8">
-		<title>Organisasi Perangkat Desa | <?php echo function_lib::get_config_value('website_name'); ?></title>
+		<title>Aset | <?php echo function_lib::get_config_value('website_name'); ?></title>
 		<meta name="keywords" content="Dashboard Admin - Koperasi Artakita" />
 		<meta name="description" content="<?php echo function_lib::get_config_value('website_seo'); ?>">
 		<meta name="author" content="Drestaputra - Inolabs">
@@ -59,7 +59,7 @@
 
 				<section role="main" class="content-body">
 					<header class="page-header">
-						<h2>Organisasi Perangkat Desa</h2>
+						<h2>Aset</h2>
 					
 						<div class="right-wrapper pull-right">
 							<ol class="breadcrumbs">
@@ -68,7 +68,7 @@
 										<i class="fa fa-home"></i>
 									</a>
 								</li>
-								<li><span>Organisasi Perangkat Desa</span></li>
+								<li><span>Import Data Aset</span></li>
 							</ol>
 					
 							<a class="sidebar-right-toggle" ><i class="fa fa-chevron-left"></i></a>
@@ -82,27 +82,20 @@
 						
 					</div>
 
-					<?php if (isset($level) && !empty($level) && trim($level) == "admin" && isset($isNotHaveOpd) AND $isNotHaveOpd): ?>
-						<div class="panel panel-warning">
-							<div class="panel-body bg-warning">
-								<p>Anda BELUM mengatur OPD / SKPD, <a class="btn btn-default" href="<?php echo base_url('opd/index/add') ?>">TAMBAH OPD</a> sendiri atau GUNAKAN OPD yang sudah ada lewat <a class="btn btn-default" href="<?php echo base_url('user/admin/profil') ?>">EDIT PROFIL</a></p>
-							</div>
-						</div>
-					<?php endif ?>
 					
 					<div class="panel panel-default">
 
                         <div class="panel-heading">
-                            <h3 class="panel-title">Organisasi Perangkat Desa</h3>
+                            <h3 class="panel-title">Import Data Aset</h3>
                         </div>
 						<div class="panel-body">
 							<form method="post" enctype="multipart/form-data">
-								<a class="btn btn-success btn-sm" href="<?php echo base_url('assets/excel/sample/opd.xlsx') ?>"><i class="fa fa-file-excel-o"></i> Download Contoh Format</a>  
+								<a class="btn btn-success btn-sm" href="<?php echo base_url('assets/excel/sample/aset.xlsx') ?>"><i class="fa fa-file-excel-o"></i> Download Contoh Format</a>  
 								<br><br>
 								<div class="form-group">
 									<label>File Excel </label>
 									<p class="p-5 bg-warning ">HANYA Extensi .xlsx dan .xls yang diperbolehkan dan maksimal ukuran 5MB</p>
-									<input class="form-control" type="file" name="file_opd">
+									<input class="form-control" type="file" name="file_aset">
 								</div>
 								<div class="form-group">
 									<button type="submit" class="btn btn-primary" name="preview" value="1">Preview</button>

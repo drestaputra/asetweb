@@ -16,7 +16,6 @@ class Mopd extends CI_Model {
 		return $query->result_array();
 	}
 	function upload(){
-		$this->load->library('PhpOffice\PhpSpreadsheet\Spreadsheet');
 		$user_sess = $this->function_lib->get_user_level();
         $level = isset($user_sess['level']) ? $user_sess['level'] : "";
         $id_user = isset($user_sess['id_user']) ? $user_sess['id_user'] : "";
@@ -25,7 +24,7 @@ class Mopd extends CI_Model {
 		$msg = "";
 		$strTime = time();
 		$config['upload_path'] = './assets/excel/opd';
-		$config['allowed_types'] = 'xlsx';
+		$config['allowed_types'] = 'xlsx|xls';
 		$config['max_size']  = '5000';
 		$config['remove_spaces'] = true;
 		$config['encrypt_name'] = true;
@@ -61,7 +60,13 @@ class Mopd extends CI_Model {
         	$msg = "File import tidak ditemukan, silahkan upload ulang";
             return array("status" => $status, "msg" => $msg);
         }
+        $ext = pathinfo($filename, PATHINFO_EXTENSION);
+
         $reader = new PhpOffice\PhpSpreadsheet\Reader\Xlsx();
+
+        if (!empty($ext) && $ext == "xls") {
+        	$reader = new PhpOffice\PhpSpreadsheet\Reader\Xls();
+        }
         $spreadsheet = $reader->load($path.$filename); // Load file yang tadi diupload ke folder tmp
         $sheet = $spreadsheet->getActiveSheet()->toArray(null, true, true, true);
         // hapus kolom header

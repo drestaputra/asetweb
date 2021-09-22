@@ -1,4 +1,6 @@
 <?php $cont=$this->uri->segment(2, 0); ?>
+<?php $url1=$this->uri->segment(1, 0); ?>
+
 <aside id="sidebar-left" class="sidebar-left">
 				
 					<div class="sidebar-header">
@@ -23,7 +25,7 @@
 										</a>
 									</li>
 
-									<li <?php if (isset($url1) AND trim($url1)!="" AND $url1=="aset"): ?>
+									<li <?php if (isset($url1) AND trim($url1)!="" AND $url1=="aset"  AND $cont != "verifikasi"): ?>
 										 class="nav-active"
 									<?php endif ?>>
 										<a href="<?php echo base_url('aset/index'); ?>">
@@ -31,7 +33,7 @@
 											<span>Aset Tanah</span>
 										</a>
 									</li>	
-									<li <?php if (isset($url1) AND trim($url1)!="" AND $url1=="verifikasi_aset"): ?>
+									<li <?php if (isset($url1) AND trim($url1)!="" AND $url1=="aset" AND $cont == "verifikasi"): ?>
 										 class="nav-active"
 									<?php endif ?>>
 										<a href="<?php echo base_url('aset/verifikasi'); ?>">

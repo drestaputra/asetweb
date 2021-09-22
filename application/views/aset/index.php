@@ -27,6 +27,8 @@
 		<link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendor/bootstrap-multiselect/bootstrap-multiselect.css" />
 		<link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendor/morris/morris.css" />
 
+		<link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendor/morris/morris.css" />
+		<link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendor/select2/select2.css" />
 		<!-- Theme CSS -->
 		<link rel="stylesheet" href="<?php echo base_url(); ?>assets/stylesheets/theme.css" />
 
@@ -56,6 +58,11 @@
         
 	</head>
 	<body>
+		<style type="text/css">
+			#map { 
+			  height: 40vh;
+			}
+		</style>
 		<section class="body">
 
 			<?php function_lib::getHeader(); ?>
@@ -89,9 +96,7 @@
                             
 						
 					</div>
-					<?php if ($state_data == "list" OR $state_data == "success"): ?>
-						<a href="" class="btn btn-success"><i class="fa fa-file-excel-o"></i> Import Data</a>
-					<?php endif ?>
+					
 					<div class="panel panel-default">
 
                         <div class="panel-heading">
@@ -101,6 +106,13 @@
                             <div class="alert " style="display: none;">
                                 <p class="msg"></p>
                             </div>
+                            <?php if ($level != "pengurus_barang" AND $state_data == "list" OR $state_data == "success"): ?>
+								<div class="row m-b-10">
+									<div class="col-md-12">
+										<a href="<?php echo base_url('aset/import') ?>" class="btn btn-success pull-left"><i class="fa fa-file-excel-o"></i> Import Data</a>
+									</div>
+								</div>
+							<?php endif ?>
 							<?php echo $output; ?>
 						</div>
 					</div>
@@ -121,7 +133,15 @@
 		<script src="<?php echo base_url(); ?>assets/vendor/jquery-ui/js/jquery-ui-1.10.4.custom.js"></script>
 		<script src="<?php echo base_url(); ?>assets/vendor/jquery-ui-touch-punch/jquery.ui.touch-punch.js"></script>
 		<script src="<?php echo base_url(); ?>assets/vendor/jquery-appear/jquery.appear.js"></script>
-		
+
+		<!-- location picker -->
+		<link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css" />
+		<script type="text/javascript" src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"></script>
+
+		<script src="https://cdn-geoweb.s3.amazonaws.com/esri-leaflet/0.0.1-beta.5/esri-leaflet.js"></script>
+		<script src="https://cdn-geoweb.s3.amazonaws.com/esri-leaflet-geocoder/0.0.1-beta.5/esri-leaflet-geocoder.js"></script>
+		<link rel="stylesheet" type="text/css" href="https://cdn-geoweb.s3.amazonaws.com/esri-leaflet-geocoder/0.0.1-beta.5/esri-leaflet-geocoder.css">
+
 		<script type="text/javascript">
 
 
@@ -134,7 +154,59 @@
 					$('#field-id_desa').chosen().trigger('chosen:updated');
 					$('#field-id_desa').change();
 				<?php endif ?>
-				
+				<?php if ($state_data == "add" OR $state_data == "edit"): ?>
+					
+					$(".longitude_form_group").after("<div class='form-group'><div id='map'></div></div>")
+					var map = L.map('map', {
+					    // Set latitude and longitude of the map center (required)
+					    center: [-7.667370, 109.652153],
+					    // Set the initial zoom level, values 0-18, where 0 is most zoomed-out (required)
+					    zoom: 11
+					});
+					var tiles = new L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+					attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+					minZoom: '15'}).addTo(map);
+
+					map.on('click', function(ev) {
+					  $("[name='latitude']").val(ev.latlng.lat);
+					  $("[name='longitude']").val(ev.latlng.lng);
+					  if (typeof pin == "object") {
+					    pin.setLatLng(ev.latlng);
+					  }
+					  else {
+					    pin = L.marker(ev.latlng,{ riseOnHover:true,draggable:true });
+					    pin.addTo(map);
+					    pin.on('drag',function(ev) {
+					      $("[name='latitude']").val(ev.latlng.lat);
+					      $("[name='longitude']").val(ev.latlng.lng);
+					    });
+					  }
+					});
+
+				// tambah fungsi search
+				var greenIcon = new L.Icon({
+					iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+					shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+					iconSize: [25, 41],
+					iconAnchor: [12, 41],
+					popupAnchor: [1, -34],
+					shadowSize: [41, 41]
+				});
+
+				L.marker([51.5, -0.09], {icon: greenIcon}).addTo(map);
+				L.control.scale().addTo(map);
+
+				var searchControl = new L.esri.Controls.Geosearch().addTo(map);
+
+				var results = new L.LayerGroup().addTo(map);
+				searchControl.on('results', function(data){
+				    results.clearLayers();
+				    for (var i = data.results.length - 1; i >= 0; i--) {
+				      results.addLayer(L.marker(data.results[i].latlng,{icon: greenIcon}));
+				    }
+				});
+				<?php endif ?>
+			
 			$('#field-id_kecamatan').change(function() {
 					var selectedValue = $('#field-id_kecamatan').val();		
 					$.post('ajax_extension/id_desa/id_kecamatan/'+encodeURI(selectedValue.replace(/\//g,'_agsl_')), {}, function(data) {
@@ -158,12 +230,24 @@
 			
 		</script>
 		<script src="<?php echo base_url(); ?>assets/javascripts/theme.js"></script>
-
-	<!-- Theme Custom -->
-	<script src="<?php echo base_url(); ?>assets/javascripts/theme.custom.js"></script>
-
-	<!-- Theme Initialization Files -->
-	<script src="<?php echo base_url(); ?>assets/javascripts/theme.init.js"></script>
+		
+		<!-- Theme Custom -->
+		<script src="<?php echo base_url(); ?>assets/javascripts/theme.custom.js"></script>
+		
+		<!-- Theme Initialization Files -->
+		<script src="<?php echo base_url(); ?>assets/javascripts/theme.init.js"></script>
+		<script src="<?php echo base_url(); ?>assets/vendor/select2/select2.js"></script>
+		<script type="text/javascript">
+			function searchCustom(){
+					$("[name=sea67d6ad]").parent().html(
+						"<select style='width:200px;' class='form-control searchable-input searchable-input-select' name='id_opd_admin'><option value=''>Semua OPD</option><?php foreach ($dataOpd as $key => $value): ?><option value='<?php echo $value['id_opd'] ?>'><?php echo $value['label_opd'] ?></option><?php endforeach ?></select>"
+					);
+					$(".searchable-input-select").select2();
+				
+					
+				}
+			searchCustom();
+		</script>
 		
 		
 		

@@ -127,8 +127,6 @@
 		<!-- flexigrid -->		
        <script type="text/javascript">
        	
-			
-       	
 			function searchCustom(){
 				$("[name=s4c6470b5]").parent().html(
 					"<select style='width:200px;' class='form-control searchable-input searchable-input-select' name='id_opd_admin'><option value=''>Semua OPD</option><?php foreach ($dataOpd as $key => $value): ?><option value='<?php echo $value['id_opd'] ?>'><?php echo $value['label_opd'] ?></option><?php endforeach ?></select>"

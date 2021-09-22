@@ -5,8 +5,8 @@
 		<!-- Basic -->
 		<meta charset="UTF-8">
 
-		<title>Dashboard Pengurus Barang | <?php echo function_lib::get_config_value('website_name'); ?></title>
-		<meta name="keywords" content="Dashboard Pengurus Barang - <?php echo function_lib::get_config_value('website_name'); ?>" />
+		<title>Dashboard Koordinator | <?php echo function_lib::get_config_value('website_name'); ?></title>
+		<meta name="keywords" content="Dashboard Koordinator - <?php echo function_lib::get_config_value('website_name'); ?>" />
 		<meta name="description" content="<?php echo function_lib::get_config_value('website_seo'); ?>">
 		<meta name="author" content="okler.net">
 

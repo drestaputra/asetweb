@@ -14,7 +14,7 @@ class Opd extends CI_Controller {
 		parent::__construct();
 		//Do your magic here
 		$this->function_lib->cek_auth(array("super_admin","admin"));
-		$this->load->library(array('grocery_CRUD','ajax_grocery_crud','PhpOffice\PhpSpreadsheet\Spreadsheet'));   
+		$this->load->library(array('grocery_CRUD','ajax_grocery_crud'));   
 	}		
  
     public function index() {
