@@ -2138,3 +2138,11 @@
 .m-l-r-auto {margin-left: auto; margin-right: auto;}
 .m-l-auto {margin-left: auto;}
 .m-r-auto {margin-right: auto;}
+
+
+.leaflet-popup-content p{
+    margin: 7px 0px!important;
+}
+.leaflet-popup-content h3{
+    margin: 7px 0px!important;
+}

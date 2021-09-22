@@ -244,6 +244,13 @@
 				var tiles = new L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 					attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
 					minZoom: '15'}).addTo(map);
+				marker = L.marker(
+									[0, 0],
+									{ 
+										draggable: true,
+										title: "",
+										opacity: 0
+									});
 
 				$("#btn-cari").click();
 
@@ -270,6 +277,9 @@
 				});
 				
 				$("#btn-cari").click(function(event) {
+					
+					$(".leaflet-marker-pane").children('.leaflet-marker-icon').remove();
+					$(".leaflet-shadow-pane").children('*').remove();
 					event.preventDefault();
 					$("#btn-cari").attr('disabled',true);
 					var nama_aset = $("#nama_aset").val();
@@ -277,6 +287,7 @@
 					var id_kecamatan = $("#kecamatan").val();
 					var id_desa = $("#desa").val();
 					$.ajax({
+						
 						url: '<?php echo base_url('super_admin/dashboard/cari_aset') ?>',
 						type: 'POST',
 						dataType: 'json',
@@ -286,14 +297,15 @@
 							var points = [["",null,null]];
 							for (var i = 0; i < response.length; i++) {
 								if (response[i]["longitude"] != null && response[i]["latitude"] != null) {
-									var marker = L.marker(
+									marker = L.marker(
 									[response[i]["latitude"], response[i]["longitude"]],
 									{ 
 										draggable: true,
 										title: response[i]['nama_aset'],
 										opacity: 0.75
 									});
-									marker.addTo(map).bindPopup("<p1><b>"+response[i]['nama_aset']+"</b><br>"+response[i]['keterangan']+"</p1>") .openPopup();
+									marker.addTo(map).bindPopup("<h3><b>"+response[i]['nama_aset']+"</b></h3><p><br>"+response[i]['keterangan']+"</p><p>Alamat : "+response[i]["alamat"]+"<p/><br><a class='btn btn-xs btn-info' href='<?php echo base_url('aset/index/read/') ?>"+response[i]['id_aset']+"'>Detail</a>") .openPopup();
+
 								}
 							}
 
@@ -303,21 +315,7 @@
 					
 				});
 
-				map.on('click', function(ev) {
-				  $('#lat').val(ev.latlng.lat);
-				  $('#lng').val(ev.latlng.lng);
-				  if (typeof pin == "object") {
-				    pin.setLatLng(ev.latlng);
-				  }
-				  else {
-				    pin = L.marker(ev.latlng,{ riseOnHover:true,draggable:true });
-				    pin.addTo(map);
-				    pin.on('drag',function(ev) {
-				      $('#lat').val(ev.latlng.lat);
-				      $('#lng').val(ev.latlng.lng);
-				    });
-				  }
-				});
+				
 				
 
 
