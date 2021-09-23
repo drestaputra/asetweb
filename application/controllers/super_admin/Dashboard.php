@@ -21,7 +21,7 @@ class Dashboard extends CI_Controller {
 		$data['count_aset_valid'] = $this->Maset->count_aset_by_status("valid");
 		$data['count_aset_tidak_valid'] = $this->Maset->count_aset_by_status("tidak_valid");
 		$data['count_aset_sedang_diverifikasi'] = $this->Maset->count_aset_by_status_verifikasi("sedang_diverifikasi");
-		$data['count_aset_by_opd'] = $this->Maset->count_aset_by_opd("sedang_diverifikasi");
+		$data['count_aset_by_opd'] = $this->Maset->count_aset_by_opd();
 		$this->load->view('super_admin/dashboard/index',$data,false);	
 	}
 	public function get_desa_by_kecamatan($id_kecamatan = "0"){

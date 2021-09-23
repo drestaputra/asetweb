@@ -123,7 +123,10 @@ class Maset extends CI_Model {
 		$data = $query->result_array();
 		return $data;
 	}
-	function count_aset_by_status($status = "aktif"){
+	function count_aset_by_status($status = "aktif", $where =""){
+		if (!empty($where) AND trim($where) != "") {
+			$this->db->where($where);
+		}
 		// SELECT count(id_aset),status_aset FROM `aset` GROUP BY status_aset
 		$this->db->select('count(id_aset) as total');
 		$this->db->group_by("status_aset");
@@ -133,7 +136,10 @@ class Maset extends CI_Model {
 		$total = isset($data['total']) ?  floatval($data['total']) : 0;
 		return $total;
 	}
-	function count_aset_by_status_verifikasi($status = "valid"){
+	function count_aset_by_status_verifikasi($status = "valid", $where = ""){
+		if (!empty($where) AND trim($where) != "") {
+			$this->db->where($where);
+		}
 		// SELECT count(id_aset),status_aset FROM `aset` GROUP BY status_aset
 		$this->db->select('count(id_aset) as total');
 		$this->db->group_by("status_verifikasi_aset");
@@ -145,7 +151,10 @@ class Maset extends CI_Model {
 		return $total;
 	}
 	// SELECT (SELECt count(id_aset) as total FROM aset WHERE aset.id_opd_aset = opd.id_opd) as total, nama_opd,label_opd FROM `opd` GROUP by id_opd
-	function count_aset_by_opd(){
+	function count_aset_by_opd($where = ""){
+		if (!empty($where) AND trim($where) != "") {
+			$this->db->where($where);
+		}
 		$this->db->select('(SELECt count(id_aset) as total FROM aset WHERE aset.id_opd_aset = opd.id_opd) as total, nama_opd,label_opd');
 		$this->db->group_by("id_opd");
 		$this->db->order_by('label_opd', 'asc');
