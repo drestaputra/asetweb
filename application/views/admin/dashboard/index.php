@@ -82,7 +82,7 @@
 												<div class="form-group">
 													<label>OPD</label>
 													<select class="form-control select2" id="id_opd" name="id_opd">
-														<option value="">Semua OPD</option>
+														
 														<?php foreach ($dataOpd as $key => $value): ?>
 															<option value="<?php echo $value['id_opd'] ?>"><?php echo $value['label_opd']; ?></option>
 														<?php endforeach ?>

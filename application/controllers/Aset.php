@@ -69,19 +69,27 @@ class Aset extends CI_Controller {
         if ($level == "pengurus_barang") {
             $id_admin = $this->function_lib->get_one('id_admin_pengurus_barang', 'pengurus_barang','id_pengurus_barang='.$this->db->escape($id_user).'');
             $id_opd_admin = $this->function_lib->get_one('id_opd_admin', 'admin','id_admin='.$this->db->escape($id_admin).'');
-            $crud->set_relation('id_opd_aset','admin','id_opd_admin,(SELECT label_opd FROM opd where id_opd=id_opd_admin)', 'status!="deleted" AND id_opd_admin='.$this->db->escape($id_opd_admin).'');
+            $crud->set_relation('id_opd_aset','admin','id_opd_admin,(SELECT label_opd FROM opd where id_opd=id_opd_admin)', 'status!="deleted" AND (id_opd_admin='.$this->db->escape($id_opd_admin).' )');
             $crud->unset_add();
             $crud->unset_delete();
-            $crud->where('jea67d6ad.id_opd_admin', $id_opd_admin);
+            $crud->where('(id_opd_admin = '.$this->db->escape($id_opd_admin).' OR id_opd_aset="0")');
         }else if($level == "koordinator"){
             $id_admin = $this->function_lib->get_one('id_admin_koordinator', 'koordinator','id_koordinator='.$this->db->escape($id_user).'');
             $id_opd_admin = $this->function_lib->get_one('id_opd_admin', 'admin','id_admin='.$this->db->escape($id_admin).'');
-            $crud->set_relation('id_opd_aset','admin','id_opd_admin,(SELECT label_opd FROM opd where id_opd=id_opd_admin)', 'status!="deleted" AND id_opd_admin='.$this->db->escape($id_opd_admin).'');
+            $crud->set_relation('id_opd_aset','admin','id_opd_admin,(SELECT label_opd FROM opd where id_opd=id_opd_admin)', 'status!="deleted" AND (id_opd_admin='.$this->db->escape($id_opd_admin).' )');
             $crud->unset_add();
             $crud->unset_delete();
-            $crud->where('jea67d6ad.id_opd_admin', $id_opd_admin);
+            $crud->where('(id_opd_admin = '.$this->db->escape($id_opd_admin).' OR id_opd_aset="0")');
         }else if($level == "super_admin"){
             $crud->set_relation('id_opd_aset','admin','id_opd_admin,(SELECT label_opd FROM opd where id_opd=id_opd_admin)', 'status!="deleted" ');
+        }else if($level == "admin"){
+            $id_admin = $id_user;
+            $id_opd_admin = $this->function_lib->get_one('id_opd_admin', 'admin','id_admin='.$this->db->escape($id_admin).'');
+            $crud->set_relation('id_opd_aset','admin','id_opd_admin,(SELECT label_opd FROM opd where id_opd=id_opd_admin)', 'status!="deleted" AND (id_opd_admin='.$this->db->escape($id_opd_admin).' )');
+            $crud->unset_add();
+            $crud->unset_delete();
+            $crud->where('(id_opd_admin = '.$this->db->escape($id_opd_admin).' OR id_opd_aset="0")');
+            
         }
 
 

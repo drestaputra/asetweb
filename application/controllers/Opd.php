@@ -46,9 +46,9 @@ class Opd extends CI_Controller {
                 $isNotHaveOpd = true;
                 $crud->where(0);
                 // setelah menambah OPD dan berhasil, set OPD milik admin menjadi opd yg baru saja ditambahkan
-                $crud->callback_after_insert(array($this, 'setOpdAdmin'));
 
             }
+                $crud->callback_after_insert(array($this, 'setOpdAdmin'));
         }
 
 
