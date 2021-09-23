@@ -104,6 +104,7 @@
                             <h3 class="panel-title">Organisasi Perangkat Desa</h3>
                         </div>
 						<div class="panel-body">
+							<?php if (isset($level) && !empty($level) && trim($level) == "admin" && isset($isNotHaveOpd) AND $isNotHaveOpd): ?>
 							<?php if ($state_data == "list" OR $state_data == "success"): ?>
 								<div class="row">
 									<div class="col-md-3 pull-right">
@@ -111,6 +112,7 @@
 									</div>
 								</div>
 								<br>
+							<?php endif ?>
 							<?php endif ?>
                             <div class="alert " style="display: none;">
                                 <p class="msg"></p>
