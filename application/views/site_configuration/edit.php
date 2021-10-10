@@ -171,6 +171,13 @@
                                         </div>                                            
                                     </div>
                                     <div class="form-group">
+                                        <label class="col-sm-2 control-label">Default Foto Aset<span class="required">* Digunakan untuk default foto aset jika aset belum mempunyai foto</span></label>
+                                        <div class="col-sm-10">
+                                            
+                                                <input type="file" class="form-control" name="aset_default_foto">
+                                        </div>                                            
+                                    </div>
+                                    <div class="form-group">
                                         <label class="col-sm-2 control-label">Tampilkan Data Aset ? <span class="required">*</span></label>
                                         <div class="col-sm-10">
                                             

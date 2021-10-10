@@ -46,6 +46,37 @@ class Aset extends REST_Controller {
 
         $this->response($json_data);    
     }
+    public function data_marker_aset_post()
+    {
+        $id_user = AUTHORIZATION::get_id_user();
+        $params = isset($_POST) ? $_POST : array();
+        $start = (int)$this->input->post('page');
+        
+        $additional_where= ' AND latitude IS NOT NULL AND longitude IS NOT NULL';
+        
+        $query_arr= $this->Maset->data($params,$custom_select='',$count=false,$additional_where, 'created_by ASC');        
+        $query = $query_arr['query'];
+        $total = $query_arr['total'];
+        $status = $query_arr['status'];
+        $msg = $query_arr['msg'];
+        $response=$query->result_array();        
+        $perPage=((int)$this->input->post('perPage')>0)?$this->input->post('perPage'):$total;
+        if ($total!=0) {            
+        $totalPage=ceil($total/$perPage)-1;
+        }else{$totalPage=0;}                 
+        foreach ($response as $key => $value) {
+            $response[$key]['foto_aset'] = $this->Mfoto_aset->getFotoAset($value['id_aset']);
+            $response[$key]['tanggal_sertifikat'] = date("d-m-Y", strtotime($response[$key]['tanggal_sertifikat']));
+            $response[$key]['harga_perolehan'] = "Rp. ".number_format($response[$key]['harga_perolehan'],0,'.','.');
+            $response[$key]['luas_tanah'] = number_format($response[$key]['luas_tanah'],0,'.','.');
+            $response[$key]['latitude'] = empty($response[$key]['latitude']) ? "0" : $response[$key]['latitude'];
+            $response[$key]['longitude'] = empty($response[$key]['longitude']) ? "0" : $response[$key]['longitude'];
+        }      
+        $json_data = array('status'=>$status,'msg'=>$msg,'page' => $start,'totalPage'=>$totalPage, 'recordsFiltered' => ((int)$this->input->post('perPage')>0)?$this->input->post('perPage'):$total, 'totalRecords' => $total, 'data' => $response);
+       
+
+        $this->response($json_data);    
+    }
     public function detail_aset_post(){
         $id_user = AUTHORIZATION::get_id_user();
         $id_aset = $this->input->post('id_aset',TRUE);

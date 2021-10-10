@@ -57,7 +57,7 @@ class Maset extends CI_Model {
         }
         $pencarian = $this->input->post('pencarian',TRUE);
         if (!empty($pencarian)) {            
-        	$where.=' AND (kode_barang LIKE '.$this->db->escape($pencarian).' OR nama_aset LIKE '.$this->db->escape($pencarian).')';
+        	$where.=' AND (kode_barang LIKE "%'.$this->db->escape_str($pencarian).'%" OR nama_aset LIKE "%'.$this->db->escape_str($pencarian).'%")';
         }
         $id_aset = $this->input->post('id_aset',TRUE);
         if (!empty($id_aset)) {            

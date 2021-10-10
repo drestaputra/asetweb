@@ -165,7 +165,7 @@
 					});
 					var tiles = new L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 					attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-					minZoom: '16'}).addTo(map);
+					minZoom: '10'}).addTo(map);
 
 					map.on('click', function(ev) {
 					  $("[name='latitude']").val(ev.latlng.lat);

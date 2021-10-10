@@ -51,6 +51,18 @@ class Mfoto_aset extends CI_Model {
     		$this->db->order_by('id_foto_aset', 'desc');
     		$query = $this->db->get('foto_aset');
     		$dataFoto = $query->result_array();
+            if (empty($dataFoto)) {
+            
+                $dataFoto = array(array(
+                    "id_foto_aset" => "1",
+                    "id_aset" => $id_aset,
+                    "foto_aset" => "https://www.kebumenkab.go.id/resource/doc/post/images/202008041452426.jpg",
+                    "status_foto" => "aktif",
+                    "created_datetime" => date("Y-m-d H:i:s"),
+                    
+                ));
+        
+            }
     	}
     	return $dataFoto;
     }

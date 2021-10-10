@@ -27,7 +27,7 @@ class Aset extends CI_Controller {
         $crud->set_language('indonesian');
         
         
-        $crud->columns("nama_aset","galeri","kode_barang","register","kecamatan","desa","jenis_hak","tanggal_sertifikat","nomor_sertifikat","penggunaan","asal_perolehan","harga_perolehan","keterangan","latitude","longitude","status_aset","status_verifikasi_aset");
+        $crud->columns("id_opd_aset","nama_aset","galeri","kode_barang","register","kecamatan","desa","jenis_hak","tanggal_sertifikat","nomor_sertifikat","penggunaan","asal_perolehan","harga_perolehan","keterangan","latitude","longitude","status_aset","status_verifikasi_aset");
         $crud->unset_columns("created_by","created_by_id");
         // $crud->callback_column('jumlah_modal_usaha',array($this,'set_number_format_with_rp'));        
         // $crud->field_type('jumlah_modal_usaha','integer');
