@@ -77,7 +77,7 @@
                         <?php if (trim($this->input->get('status'))!=""): ?>
                             <?php echo function_lib::response_notif($this->input->get('status'),$this->input->get('msg')); ?>
                         <?php endif ?>
-                        <form id="form" method="POST" class="form-horizontal">
+                        <form id="form" method="POST" class="form-horizontal" enctype="multipart/form-data">
                             <section class="panel">
 
                                 <div class="panel-body">
@@ -171,11 +171,15 @@
                                         </div>                                            
                                     </div>
                                     <div class="form-group">
-                                        <label class="col-sm-2 control-label">Default Foto Aset<span class="required">* Digunakan untuk default foto aset jika aset belum mempunyai foto</span></label>
+                                        <label class="col-sm-2 control-label">Default Foto Aset<span class="required">*jpg/png * Digunakan untuk default foto aset jika aset belum mempunyai foto</span></label>
                                         <div class="col-sm-10">
-                                            
-                                                <input type="file" class="form-control" name="aset_default_foto">
-                                        </div>                                            
+                                            <input type="file" class="form-control" name="aset_default_foto">
+                                        </div>      
+                                        <?php if (isset($aset_default_foto) AND !empty($aset_default_foto) AND file_exists('./api/assets/default_foto_aset.jpg')): ?>
+                                            <div class="col-sm-4">
+                                                <img src="<?php echo base_url('api/assets/default_foto_aset.jpg') ?>" class="img-thumbnail img-responsive">
+                                            </div>                             
+                                        <?php endif ?>         
                                     </div>
                                     <div class="form-group">
                                         <label class="col-sm-2 control-label">Tampilkan Data Aset ? <span class="required">*</span></label>

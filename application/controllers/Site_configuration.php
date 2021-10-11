@@ -17,6 +17,23 @@ class site_configuration extends CI_Controller {
         $data['id_user'] = $id_user;
         $data['level'] = $level;
     	if ($this->input->post()) {
+            $config['upload_path'] = './api/assets/';
+            $config['allowed_types'] = 'jpg|png|jpeg';
+            $config['max_size']  = '5000';
+            $config['file_name']  = 'default_foto_aset.jpg';
+            $config['overwrite']  = true;
+            
+            $this->load->library('upload', $config);
+            
+            if ( ! $this->upload->do_upload('aset_default_foto')){
+                $error = $this->upload->display_errors('','');
+                redirect(base_url('pengaturan/edit?status=500&msg='.base64_encode($error).''));
+            }
+            else{
+                $_POST['aset_default_foto'] = "default_foto_aset.jpg";
+                $data = array('upload_data' => $this->upload->data());
+            }
+
             foreach ($_POST as $key => $value) {
                 $this->Msite_configuration->edit($key,$value);
                 if ($key == "aset_jenis_hak") {
