@@ -121,6 +121,59 @@
 
 			<?php $this->load->view('admin/right_bar'); ?>
 		</section>
+		<?php if ($state_data == "edit" || $state_data == "add"): ?>
+			<!-- Modal -->
+			<div id="modalPemanfaatan" class="modal fade" role="dialog">
+			  <form method="POST" >
+			  <div class="modal-dialog">
+			    <!-- Modal content-->
+			    <div class="modal-content">
+			      <div class="modal-header">
+			        <button type="button" class="close" data-dismiss="modal">&times;</button>
+			        <h4 class="modal-title">Pemanfaatan Baru</h4>
+			      </div>
+			      <div class="modal-body">
+			        	<div class="form-group">
+			        		<label>Isi Pemanfaatan</label>
+			        		<input type="text" class="form-control" name="isi_pemanfaatan">
+			        	</div>
+
+			      </div>
+			      <div class="modal-footer">
+			      	<button class="btn btn-info" id="tambahPemanfaatan"><i class="fa fa-save"></i> Simpan</button>
+			        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+			      </div>
+			    </div>
+
+			  </div>
+			  </form>
+			</div>
+			<div id="modalSaranPemanfaatan" class="modal fade" role="dialog">
+			  <form method="POST" >
+			  <div class="modal-dialog">
+			    <!-- Modal content-->
+			    <div class="modal-content">
+			      <div class="modal-header">
+			        <button type="button" class="close" data-dismiss="modal">&times;</button>
+			        <h4 class="modal-title">Saran Pemanfaatan Baru</h4>
+			      </div>
+			      <div class="modal-body">
+			        	<div class="form-group">
+			        		<label>Isi Saran Pemanfaatan</label>
+			        		<input type="text" class="form-control" name="isi_saran_pemanfaatan">
+			        	</div>
+
+			      </div>
+			      <div class="modal-footer">
+			      	<button class="btn btn-info" id="tambahSaranPemanfaatan"><i class="fa fa-save"></i> Simpan</button>
+			        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+			      </div>
+			    </div>
+
+			  </div>
+			  </form>
+			</div>
+		<?php endif ?>
 
 		<!-- Vendor -->
 		<!-- <script src="<?php echo base_url(); ?>assets/vendor/jquery/jquery.js"></script> -->
@@ -247,6 +300,153 @@
 					
 				}
 			searchCustom();
+		</script>
+		
+		<script type="text/javascript">
+		<?php if ($state_data == "list" OR $state_data == "success"): ?>
+			$(".searchable-input[name='pemanfaatan']").remove();
+			$(".searchable-input[name='saran_pemanfaatan']").remove();
+		<?php endif ?>
+		<?php if ($state_data == "add" OR $state_data == "edit"): ?>
+			
+			function initOpsiPemanfaatan(){
+				var opsiPemanfaatan = 
+							`<div class="form-group">
+								<label class="col-sm-2 control-label">Pemanfaatan</label>
+								<div class="col-sm-5">
+									<select name="pemanfaatan[]" class="form-control select2-pemanfaatan" multiple="multiple"></select>
+								</div>
+								<div class="col-sm-5">
+									<button type="button" class="btn btn-info " data-toggle="modal" data-backdrop="false" data-target="#modalPemanfaatan"><i class="fa fa-plus"></i> Tambah Pemanfaatan Baru</button>
+								</div>
+							</div>`;
+				$(".status_verifikasi_aset_form_group").after(opsiPemanfaatan);
+				$(".select2-pemanfaatan").select2();
+						
+			}
+			function initDataPemanfaatan(){
+				$.ajax({
+					url: '<?php echo base_url('pemanfaatan/get_all_pemanfaatan') ?>',
+					type: 'GET',
+					dataType: 'JSON',
+					success : function(response){
+
+						$('.select2-pemanfaatan').empty().trigger("change");
+						var newOption = [];            
+
+						$.each(response, function(index, val) {   
+					        newOption.push(`<option value="`+ val.id_pemanfaatan +`">`+ val.isi_pemanfaatan +`</option>`);
+						});
+						var selectedOption = [];
+						<?php foreach ($selectedDataPemanfaatan as $key => $value): ?>
+							selectedOption.push("<?php echo $value['id_pemanfaatan'] ?>");
+						<?php endforeach ?>
+						
+				        $('.select2-pemanfaatan').select2({
+				            minimumInputLength: 0,                        
+				        }).append(newOption);
+		        		$('.select2-pemanfaatan').val(selectedOption); // Select the option with a value of '1'
+						$('.select2-pemanfaatan').trigger('change'); // Notify any JS components that the value changed
+					}
+				})		
+			}
+			initOpsiPemanfaatan();
+			initDataPemanfaatan();
+			$("#tambahPemanfaatan").click(function(event) {
+				event.preventDefault();
+				var isi_pemanfaatan = $("[name='isi_pemanfaatan']").val();
+				$.ajax({
+					url: '<?php echo base_url('pemanfaatan/tambah_baru') ?>',
+					type: 'POST',
+					data: {isi_pemanfaatan: isi_pemanfaatan},
+					dataType: 'json',
+					success : function(response){
+						if (response.status == 200) {
+							initDataPemanfaatan();
+							$('#modalPemanfaatan').modal('hide');
+						}else{
+							alert(response.msg);
+						}
+					}
+				})
+			});
+			$("[name='status_aset']").change(function(event) {
+				cekStatusAset();
+			});
+
+			function cekStatusAset(){
+				var status = $("[name='status_aset']").val();
+				if(status == "idle"){
+					$(".fg-saran-pemanfaatan").show();
+				}else{
+					$(".fg-saran-pemanfaatan").hide();
+				}
+			}
+
+			// saran pemanfaatan
+			function initOpsiSaranPemanfaatan(){
+				var opsiSaranPemanfaatan = 
+							`<div class="form-group fg-saran-pemanfaatan">
+								<label class="col-sm-2 control-label">Saran Pemanfaatan</label>
+								<div class="col-sm-5">
+									<select name="saran_pemanfaatan[]" class="form-control select2-saran-pemanfaatan" multiple="multiple"></select>
+								</div>
+								<div class="col-sm-5">
+									<button type="button" class="btn btn-info " data-toggle="modal" data-backdrop="false" data-target="#modalSaranPemanfaatan"><i class="fa fa-plus"></i> Tambah Saran Pemanfaatan Baru</button>
+								</div>
+							</div>`;
+				$(".status_aset_form_group").after(opsiSaranPemanfaatan);
+				$(".select2-saran-pemanfaatan").select2();
+						
+			}
+			function initDataSaranPemanfaatan(){
+				$.ajax({
+					url: '<?php echo base_url('saran_pemanfaatan/get_all_saran_pemanfaatan') ?>',
+					type: 'GET',
+					dataType: 'JSON',
+					success : function(response){
+
+						$('.select2-saran-pemanfaatan').empty().trigger("change");
+						var newOptionSaran = [];            
+
+						$.each(response, function(index, val) {   
+					        newOptionSaran.push(`<option value="`+ val.id_saran_pemanfaatan +`">`+ val.isi_saran_pemanfaatan +`</option>`);
+						});
+						var selectedOptionSaran = [];
+						<?php foreach ($selectedDataSaranPemanfaatan as $key => $value): ?>
+							selectedOptionSaran.push("<?php echo $value['id_saran_pemanfaatan'] ?>");
+						<?php endforeach ?>
+						
+				        $('.select2-saran-pemanfaatan').select2({
+				            minimumInputLength: 0,                        
+				        }).append(newOptionSaran);
+		        		$('.select2-saran-pemanfaatan').val(selectedOptionSaran); // Select the option with a value of '1'
+						$('.select2-saran-pemanfaatan').trigger('change'); // Notify any JS components that the value changed
+					}
+				})		
+			}
+			initOpsiSaranPemanfaatan();
+			initDataSaranPemanfaatan();
+			$("#tambahSaranPemanfaatan").click(function(event) {
+				event.preventDefault();
+				var isi_saran_pemanfaatan = $("[name='isi_saran_pemanfaatan']").val();
+				$.ajax({
+					url: '<?php echo base_url('saran_pemanfaatan/tambah_baru') ?>',
+					type: 'POST',
+					data: {isi_saran_pemanfaatan: isi_saran_pemanfaatan},
+					dataType: 'json',
+					success : function(response){
+						if (response.status == 200) {
+							initDataSaranPemanfaatan();
+							$('#modalSaranPemanfaatan').modal('hide');
+						}else{
+							alert(response.msg);
+						}
+					}
+				})
+			});
+			cekStatusAset();
+		<?php endif ?>
 		</script>
 		
 		

@@ -9,6 +9,10 @@ class Aset extends CI_Controller {
 		//Do your magic here
 		$this->function_lib->cek_auth(array("super_admin","admin","koordinator","pengurus_barang"));
 		$this->load->library(array('grocery_CRUD','ajax_grocery_crud'));   
+        $this->load->model('Mpemanfaatan');
+        $this->load->model('Msaran_pemanfaatan');
+        $this->load->model('Mpemanfaatan_aset');
+        $this->load->model('Msaran_pemanfaatan_aset');
 	}		
  
     public function index() {
@@ -26,16 +30,13 @@ class Aset extends CI_Controller {
         $crud->where("aset.status_aset != 'deleted'");
         $crud->set_language('indonesian');
         
-        
-        $crud->columns("id_opd_aset","nama_aset","galeri","kode_barang","register","kecamatan","desa","jenis_hak","tanggal_sertifikat","nomor_sertifikat","penggunaan","asal_perolehan","harga_perolehan","keterangan","latitude","longitude","status_aset","status_verifikasi_aset");
+        $crud->columns("id_opd_aset","nama_aset","galeri","pemanfaatan","saran_pemanfaatan","kode_barang","register","kecamatan","desa","jenis_hak","tanggal_sertifikat","nomor_sertifikat","penggunaan","asal_perolehan","harga_perolehan","keterangan","latitude","longitude","status_aset","status_verifikasi_aset");
         $crud->unset_columns("created_by","created_by_id");
-        // $crud->callback_column('jumlah_modal_usaha',array($this,'set_number_format_with_rp'));        
+        $crud->unset_fields("created_by","created_by_id","created_datetime");
+        
         // $crud->field_type('jumlah_modal_usaha','integer');
         // $crud->field_type('tgl_modal_usaha','datetime');
-        // $crud->unset_add_fields('status_modal_usaha','modal_input_by');        
-        // $crud->unset_edit();        
-        // $crud->unset_texteditor(array('deskripsi_paket','full_text'));                
-        // $crud->required_fields('jumlah_modal_usaha','catatan_modal_usaha'); 
+
 
 
         $crud->display_as('id_opd_aset','OPD')
@@ -43,8 +44,12 @@ class Aset extends CI_Controller {
              ->display_as('id_kecamatan','Kecamatan')
              ->display_as('id_desa','Desa')
              ->display_as('tgl_berita','Tanggal')             
+             ->display_as('pemanfaatan','Pemanfaatan')             
+             ->display_as('saran_pemanfaatan','Saran Pemanfaatan')             
              ->display_as('created_datetime','Tanggal Data');
 
+        $crud->callback_column('pemanfaatan',array($this,'getPemanfaatanByIdAset'));        
+        $crud->callback_column('saran_pemanfaatan',array($this,'getSaranPemanfaatanByIdAset'));        
         $crud->callback_column('galeri',array($this,'getGaleriUrl'));
         // mengurangi beban load desa
         $action = $crud->getState();
@@ -58,6 +63,8 @@ class Aset extends CI_Controller {
             $id_desa = isset($asetArr['id_desa']) ? $asetArr['id_desa'] : 0;
             $where_desa = 'id_kecamatan ="'.$id_kecamatan.'"';
         }
+
+
         
         // pertimbangkan ttg performa karena load relasi saat di list
             $crud->set_relation('id_kecamatan','kecamatan','nama', ' id_kabupaten = "3305"');
@@ -94,14 +101,18 @@ class Aset extends CI_Controller {
 
 
         $crud->callback_delete(array($this,'delete_data'));    
-        $crud->unset_texteditor(array('catatan_modal_usaha','full_text'));
+        // $crud->unset_texteditor(array('catatan_modal_usaha','full_text'));
         // $crud->callback_after_insert(array($this,'set_user'));
+        $crud->callback_after_update(array($this,'setPemanfaatanAfterUpdate'));
+        $crud->callback_after_insert(array($this,'setPemanfaatanAfterInsert'));
         $crud->unset_texteditor(array('alamat','full_text'));
         $crud->unset_texteditor(array('penggunaan','full_text'));
         $crud->unset_texteditor(array('asal_perolehan','full_text'));
         $crud->unset_texteditor(array('asal_perolehan','full_text'));
 
-        $crud->change_field_type('status_aset', 'dropdown', array('aktif' => 'Aktif','non_aktif' => 'Non Aktif', 'deleted' => 'Deleted'));
+        $crud->required_fields('status_aset'); 
+
+        $crud->change_field_type('status_aset', 'dropdown', array('idle' => 'Idle','non_idle' => 'Non Idle'));
         $crud->change_field_type('status_verifikasi_aset', 'dropdown', array('valid' => 'Valid','tidak_valid' => 'Tidak Valid', 'sedang_diverifikasi' => 'Sedang Diverifikasi'));
 
         $data = $crud->render();
@@ -109,6 +120,28 @@ class Aset extends CI_Controller {
         $data->level = $level;
         $data->state_data = $crud->getState();
         $data->dataOpd = $this->Mopd->getAllOpd();
+
+        // tambahan fitur pemanfaatan
+        $data->dataPemanfaatan = array();
+        $data->selectedDataPemanfaatan = array();
+        $data->dataSaranPemanfaatan = array();
+        $data->selectedDataSaranPemanfaatan = array();
+        if (!(empty($action)) && ($action == "add" || $action == "edit")) {
+            // pemanfaatan
+            
+            $data->dataPemanfaatan =  $this->Mpemanfaatan->getAllPemanfaatan();
+            // saran pemanfaatan
+            $data->dataSaranPemanfaatan =  $this->Msaran_pemanfaatan->getAllSaranPemanfaatan();
+            
+            if ($action == "edit") {
+                $state_info = $crud->getStateInfo();
+                $pk =  $state_info->primary_key;
+                
+                $data->selectedDataPemanfaatan = $this->Mpemanfaatan_aset->getAllPemanfaatanAsetById($pk);
+                
+                $data->selectedDataSaranPemanfaatan = $this->Msaran_pemanfaatan_aset->getAllSaranPemanfaatanAsetById($pk);
+            }
+        }
         
         if ($data->state_data == "list" OR $data->state_data == "success") {
             
@@ -117,8 +150,56 @@ class Aset extends CI_Controller {
         $this->load->view('aset/index', $data, FALSE);
 
     }   
+    function setPemanfaatanAfterUpdate($post_array,$primary_key) {
+        // hapus semua data relasi pemanfaatan dengan primary key = $primary key
+        $this->Mpemanfaatan_aset->deletePemanfaatanTanahByIdAset($primary_key);
+        // insert ulang pemanfaatan yg dipilih ke table pemanfaatan tanah
+        $dataPemanfaatan = (isset($post_array['pemanfaatan'])) ? $post_array['pemanfaatan']  : array();
+        if (!empty($dataPemanfaatan)) {
+            $this->Mpemanfaatan_aset->insertDataPemanfaatanAset($dataPemanfaatan, $primary_key);
+        }
+        // SARAN PEMANFAATAN
+        // hapus semua data relasi pemanfaatan dengan primary key = $primary key
+        $this->Msaran_pemanfaatan_aset->deleteSaranPemanfaatanTanahByIdAset($primary_key);
+        // insert ulang pemanfaatan yg dipilih ke table pemanfaatan tanah
+        $dataSaranPemanfaatan = (isset($post_array['saran_pemanfaatan'])) ? $post_array['saran_pemanfaatan']  : array();
+        if (!empty($dataSaranPemanfaatan)) {
+            $this->Msaran_pemanfaatan_aset->insertDataSaranPemanfaatanAset($dataSaranPemanfaatan, $primary_key);
+        }
+        return true;
+    }
+    function setPemanfaatanAfterInsert($post_array,$primary_key) {
+        // hapus semua data relasi pemanfaatan dengan primary key = $primary key
+        $this->Mpemanfaatan_aset->deletePemanfaatanTanahByIdAset($primary_key);
+        // insert ulang pemanfaatan yg dipilih ke table pemanfaatan tanah
+        $dataPemanfaatan = (isset($post_array['pemanfaatan'])) ? $post_array['pemanfaatan']  : array();
+        if (!empty($dataPemanfaatan)) {
+            $this->Mpemanfaatan_aset->insertDataPemanfaatanAset($dataPemanfaatan, $primary_key);
+        }
+        // SARAN PEMANFAATAN
+        // hapus semua data relasi pemanfaatan dengan primary key = $primary key
+        $this->Msaran_pemanfaatan_aset->deleteSaranPemanfaatanTanahByIdAset($primary_key);
+        // insert ulang pemanfaatan yg dipilih ke table pemanfaatan tanah
+        $dataSaranPemanfaatan = (isset($post_array['saran_pemanfaatan'])) ? $post_array['saran_pemanfaatan']  : array();
+        if (!empty($dataSaranPemanfaatan)) {
+            $this->Msaran_pemanfaatan_aset->insertDataSaranPemanfaatanAset($dataSaranPemanfaatan, $primary_key);
+        }
+        return true;
+    }
     public function getGaleriUrl($value, $row){                      
         return '<a class="btn btn-info" href="'.base_url("foto_aset/index/".$row->id_aset).'" ><i class="fa fa-eye"></i> Lihat</a>';
+    }
+    public function getPemanfaatanByIdAset($value, $row){                      
+        return "<b>".$this->Mpemanfaatan_aset->getPemanfaatanByIdAset($row->id_aset)."</b>";
+        // return '<a class="btn btn-info" href="'.base_url("foto_aset/index/".$row->id_aset).'" ><i class="fa fa-eye"></i> Lihat</a>';
+    }
+    public function getSaranPemanfaatanByIdAset($value, $row){            
+    
+        if (isset($row->status_aset) && trim($row->status_aset) == "idle") {
+            return "<b>".$this->Msaran_pemanfaatan_aset->getSaranPemanfaatanByIdAset($row->id_aset)."</b>";
+        }else{
+            return "<b>NON IDLE ASET</b>";
+        }
     }
      public function verifikasi() {
        $this->load->model('Mopd');
@@ -132,20 +213,16 @@ class Aset extends CI_Controller {
         $crud->set_theme('adminlte');
         $crud->set_table('aset');        
         $crud->set_subject('Aset Tanah');
-        $crud->where("aset.status_aset != 'deleted'");
         $crud->where("aset.status_verifikasi_aset = 'sedang_diverifikasi'");
         $crud->set_language('indonesian');
         
-        
-        $crud->columns("nama_aset","galeri","kode_barang","register","kecamatan","desa","jenis_hak","tanggal_sertifikat","nomor_sertifikat","penggunaan","asal_perolehan","harga_perolehan","keterangan","latitude","longitude","status_aset","status_verifikasi_aset");
+        $crud->columns("id_opd_aset","nama_aset","galeri","pemanfaatan","saran_pemanfaatan","kode_barang","register","kecamatan","desa","jenis_hak","tanggal_sertifikat","nomor_sertifikat","penggunaan","asal_perolehan","harga_perolehan","keterangan","latitude","longitude","status_aset","status_verifikasi_aset");
         $crud->unset_columns("created_by","created_by_id");
-        // $crud->callback_column('jumlah_modal_usaha',array($this,'set_number_format_with_rp'));        
+        $crud->unset_fields("created_by","created_by_id","created_datetime");
+        
         // $crud->field_type('jumlah_modal_usaha','integer');
         // $crud->field_type('tgl_modal_usaha','datetime');
-        // $crud->unset_add_fields('status_modal_usaha','modal_input_by');        
-        // $crud->unset_edit();        
-        // $crud->unset_texteditor(array('deskripsi_paket','full_text'));                
-        // $crud->required_fields('jumlah_modal_usaha','catatan_modal_usaha'); 
+
 
 
         $crud->display_as('id_opd_aset','OPD')
@@ -153,8 +230,12 @@ class Aset extends CI_Controller {
              ->display_as('id_kecamatan','Kecamatan')
              ->display_as('id_desa','Desa')
              ->display_as('tgl_berita','Tanggal')             
+             ->display_as('pemanfaatan','Pemanfaatan')             
+             ->display_as('saran_pemanfaatan','Saran Pemanfaatan')             
              ->display_as('created_datetime','Tanggal Data');
 
+        $crud->callback_column('pemanfaatan',array($this,'getPemanfaatanByIdAset'));        
+        $crud->callback_column('saran_pemanfaatan',array($this,'getSaranPemanfaatanByIdAset'));        
         $crud->callback_column('galeri',array($this,'getGaleriUrl'));
         // mengurangi beban load desa
         $action = $crud->getState();
@@ -168,6 +249,8 @@ class Aset extends CI_Controller {
             $id_desa = isset($asetArr['id_desa']) ? $asetArr['id_desa'] : 0;
             $where_desa = 'id_kecamatan ="'.$id_kecamatan.'"';
         }
+
+
         
         // pertimbangkan ttg performa karena load relasi saat di list
             $crud->set_relation('id_kecamatan','kecamatan','nama', ' id_kabupaten = "3305"');
@@ -179,31 +262,43 @@ class Aset extends CI_Controller {
         if ($level == "pengurus_barang") {
             $id_admin = $this->function_lib->get_one('id_admin_pengurus_barang', 'pengurus_barang','id_pengurus_barang='.$this->db->escape($id_user).'');
             $id_opd_admin = $this->function_lib->get_one('id_opd_admin', 'admin','id_admin='.$this->db->escape($id_admin).'');
-            $crud->set_relation('id_opd_aset','admin','id_opd_admin,(SELECT label_opd FROM opd where id_opd=id_opd_admin)', 'status!="deleted" AND id_opd_admin='.$this->db->escape($id_opd_admin).'');
+            $crud->set_relation('id_opd_aset','admin','id_opd_admin,(SELECT label_opd FROM opd where id_opd=id_opd_admin)', 'status!="deleted" AND (id_opd_admin='.$this->db->escape($id_opd_admin).' )');
             $crud->unset_add();
             $crud->unset_delete();
-            $crud->where('jea67d6ad.id_opd_admin', $id_opd_admin);
+            $crud->where('(id_opd_admin = '.$this->db->escape($id_opd_admin).' OR id_opd_aset="0")');
         }else if($level == "koordinator"){
             $id_admin = $this->function_lib->get_one('id_admin_koordinator', 'koordinator','id_koordinator='.$this->db->escape($id_user).'');
             $id_opd_admin = $this->function_lib->get_one('id_opd_admin', 'admin','id_admin='.$this->db->escape($id_admin).'');
-            $crud->set_relation('id_opd_aset','admin','id_opd_admin,(SELECT label_opd FROM opd where id_opd=id_opd_admin)', 'status!="deleted" AND id_opd_admin='.$this->db->escape($id_opd_admin).'');
+            $crud->set_relation('id_opd_aset','admin','id_opd_admin,(SELECT label_opd FROM opd where id_opd=id_opd_admin)', 'status!="deleted" AND (id_opd_admin='.$this->db->escape($id_opd_admin).' )');
             $crud->unset_add();
             $crud->unset_delete();
-            $crud->where('jea67d6ad.id_opd_admin', $id_opd_admin);
+            $crud->where('(id_opd_admin = '.$this->db->escape($id_opd_admin).' OR id_opd_aset="0")');
         }else if($level == "super_admin"){
             $crud->set_relation('id_opd_aset','admin','id_opd_admin,(SELECT label_opd FROM opd where id_opd=id_opd_admin)', 'status!="deleted" ');
+        }else if($level == "admin"){
+            $id_admin = $id_user;
+            $id_opd_admin = $this->function_lib->get_one('id_opd_admin', 'admin','id_admin='.$this->db->escape($id_admin).'');
+            $crud->set_relation('id_opd_aset','admin','id_opd_admin,(SELECT label_opd FROM opd where id_opd=id_opd_admin)', 'status!="deleted" AND (id_opd_admin='.$this->db->escape($id_opd_admin).' )');
+            $crud->unset_add();
+            $crud->unset_delete();
+            $crud->where('(id_opd_admin = '.$this->db->escape($id_opd_admin).' OR id_opd_aset="0")');
+            
         }
 
 
         $crud->callback_delete(array($this,'delete_data'));    
-        $crud->unset_texteditor(array('catatan_modal_usaha','full_text'));
+        // $crud->unset_texteditor(array('catatan_modal_usaha','full_text'));
         // $crud->callback_after_insert(array($this,'set_user'));
+        $crud->callback_after_update(array($this,'setPemanfaatanAfterUpdate'));
+        $crud->callback_after_insert(array($this,'setPemanfaatanAfterInsert'));
         $crud->unset_texteditor(array('alamat','full_text'));
         $crud->unset_texteditor(array('penggunaan','full_text'));
         $crud->unset_texteditor(array('asal_perolehan','full_text'));
         $crud->unset_texteditor(array('asal_perolehan','full_text'));
 
-        $crud->change_field_type('status_aset', 'dropdown', array('aktif' => 'Aktif','non_aktif' => 'Non Aktif', 'deleted' => 'Deleted'));
+        $crud->required_fields('status_aset'); 
+
+        $crud->change_field_type('status_aset', 'dropdown', array('idle' => 'Idle','non_idle' => 'Non Idle'));
         $crud->change_field_type('status_verifikasi_aset', 'dropdown', array('valid' => 'Valid','tidak_valid' => 'Tidak Valid', 'sedang_diverifikasi' => 'Sedang Diverifikasi'));
 
         $data = $crud->render();
@@ -211,6 +306,28 @@ class Aset extends CI_Controller {
         $data->level = $level;
         $data->state_data = $crud->getState();
         $data->dataOpd = $this->Mopd->getAllOpd();
+
+        // tambahan fitur pemanfaatan
+        $data->dataPemanfaatan = array();
+        $data->selectedDataPemanfaatan = array();
+        $data->dataSaranPemanfaatan = array();
+        $data->selectedDataSaranPemanfaatan = array();
+        if (!(empty($action)) && ($action == "add" || $action == "edit")) {
+            // pemanfaatan
+            
+            $data->dataPemanfaatan =  $this->Mpemanfaatan->getAllPemanfaatan();
+            // saran pemanfaatan
+            $data->dataSaranPemanfaatan =  $this->Msaran_pemanfaatan->getAllSaranPemanfaatan();
+            
+            if ($action == "edit") {
+                $state_info = $crud->getStateInfo();
+                $pk =  $state_info->primary_key;
+                
+                $data->selectedDataPemanfaatan = $this->Mpemanfaatan_aset->getAllPemanfaatanAsetById($pk);
+                
+                $data->selectedDataSaranPemanfaatan = $this->Msaran_pemanfaatan_aset->getAllSaranPemanfaatanAsetById($pk);
+            }
+        }
         
         if ($data->state_data == "list" OR $data->state_data == "success") {
             
@@ -229,17 +346,7 @@ class Aset extends CI_Controller {
     public function set_number_format_with_rp($value, $row){
         return "Rp. ".number_format($value,'2',',','.');
     }
-    function set_user($post_array,$primary_key) {
-        $user_sess = $this->function_lib->get_user_level();
-        $level = isset($user_sess['level']) ? $user_sess['level'] : "";
-        $username = isset($user_sess['username']) ? $user_sess['username'] : "";
-        $post_array['modal_input_by'] = $level . '-' . $username;
-        $post_array['tgl_modal_usaha'] = isset($post_array['tgl_modal_usaha']) ? date("Y-m-d H:i:s", strtotime($post_array['tgl_modal_usaha'])) : date("Y-m-d H:i:s");
-        $this->db->where('id_modal_usaha', $primary_key);
-        $this->db->update('modal_usaha',$post_array);
      
-        return true;
-    }  
     public function import(){
         $this->load->model('Maset');
 

@@ -66,13 +66,37 @@
 											<span>OPD</span>
 										</a>
 									</li>
-									<li <?php if (isset($url1) AND trim($url1)!="" AND $url1=="aset"): ?>
-										 class="nav-active"
-									<?php endif ?>>
-										<a href="<?php echo base_url('aset/index'); ?>">
-											<i class="fa fa-map-marker" aria-hidden="true"></i>
-											<span>Aset Tanah</span>
+									<li class="nav-parent <?php if (!empty($url1) AND (trim($url1) == 'aset') OR trim($url1) == 'pemanfaatan' OR trim($url1) == "saran_pemanfaatan") : ?>nav-expanded nav-active<?php endif ?>">
+										<a>
+											<i class="fa fa-book" aria-hidden="true"></i>
+											<span>Aset</span>
 										</a>
+										<ul class="nav nav-children">
+											<li <?php if (isset($url1) AND trim($url1)!="" AND $url1=="aset"): ?>
+												 class="nav-active"
+											<?php endif ?>>
+												<a href="<?php echo base_url('aset/index'); ?>">
+													<i class="fa fa-map-marker" aria-hidden="true"></i>
+													<span>Data Aset Tanah</span>
+												</a>
+											</li>
+											<li <?php if (isset($url1) AND trim($url1)!="" AND $url1=="pemanfaatan"): ?>
+												 class="nav-active"
+											<?php endif ?>>
+												<a href="<?php echo base_url('pemanfaatan/index'); ?>">
+													<i class="fa fa-bars" aria-hidden="true"></i>
+													<span>Pemanfaatan</span>
+												</a>
+											</li>
+											<li <?php if (isset($url1) AND trim($url1)!="" AND $url1=="saran_pemanfaatan"): ?>
+												 class="nav-active"
+											<?php endif ?>>
+												<a href="<?php echo base_url('saran_pemanfaatan/index'); ?>">
+													<i class="fa fa-comments" aria-hidden="true"></i>
+													<span>Saran Pemanfaatan</span>
+												</a>
+											</li>	
+										</ul>
 									</li>	
 									<li <?php if (isset($url1) AND trim($url1)!="" AND $url1=="berita"): ?>
 										 class="nav-active"

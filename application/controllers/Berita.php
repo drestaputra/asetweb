@@ -26,7 +26,9 @@ class Berita extends CI_Controller {
         $crud->set_language('indonesian');
 
        
-        $crud->columns('judul_berita','deskripsi_berita','foto_berita','tgl_berita','status_berita','is_notif');                 
+        $crud->columns('judul_berita','deskripsi_berita','foto_berita','tgl_berita','status_berita');                 
+        // $crud->columns('judul_berita','deskripsi_berita','foto_berita','tgl_berita','status_berita','is_notif');                 
+        $crud->unset_fields('is_notif');
         
         $crud->display_as('judul_berita','Judul')
              ->display_as('deskripsi_berita','Deskripsi')
@@ -55,21 +57,21 @@ class Berita extends CI_Controller {
         return '<input type="text" maxlength="50" value="'.$value.'" name="phone" style="width:462px">';
     }
     function after_insert_baru($post_array,$primary_key){      
-        $this->load->model('Mnotifikasi');
-        $dataInformasi = $this->function_lib->get_row('berita','id_berita='.$this->db->escape($primary_key).'');
-        if (!empty($dataInformasi)) {
-            if (isset($dataInformasi['is_notif']) AND $dataInformasi['is_notif']=="1") {
-                // jika notif aktif jalankan function notifikasi
+        // $this->load->model('Mnotifikasi');
+        // $dataInformasi = $this->function_lib->get_row('berita','id_berita='.$this->db->escape($primary_key).'');
+        // if (!empty($dataInformasi)) {
+        //     if (isset($dataInformasi['is_notif']) AND $dataInformasi['is_notif']=="1") {
+        //         // jika notif aktif jalankan function notifikasi
                 
-                $content = array(
-                    "title"=> "Artakita",
-                    "message"=> isset($dataInformasi['judul_berita']) ? strip_tags($dataInformasi['judul_berita']) : "",
-                    "tag" => $primary_key,
-                    "news_permalink" => $primary_key
-                );
-                $this->Mnotifikasi->sendToTopic("all",$content);                    
-            }
-        }
+        //         $content = array(
+        //             "title"=> "Artakita",
+        //             "message"=> isset($dataInformasi['judul_berita']) ? strip_tags($dataInformasi['judul_berita']) : "",
+        //             "tag" => $primary_key,
+        //             "news_permalink" => $primary_key
+        //         );
+        //         $this->Mnotifikasi->sendToTopic("all",$content);                    
+        //     }
+        // }
         return true;
     }
     function delete_data($primary_key){        
