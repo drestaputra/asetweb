@@ -98,6 +98,65 @@ class Aset extends REST_Controller {
         }
         $this->response(array("status"=>$status,"msg"=>$msg,"data"=>$data));    
     }  
+    public function data_saran_pemanfaatan_post()
+    {
+        $id_user = AUTHORIZATION::get_id_user();
+        $params = isset($_POST) ? $_POST : array();
+        $start = (int)$this->input->post('page');
+        
+        $additional_where= ' AND status_saran_pemanfaatan!= "deleted"';
+        
+        $query_arr= $this->Maset->data_saran_pemanfaatan($params,$custom_select='',$count=false,$additional_where, 'isi_saran_pemanfaatan ASC');        
+        $query = $query_arr['query'];
+        $total = $query_arr['total'];
+        $status = $query_arr['status'];
+        $msg = $query_arr['msg'];
+        $response=$query->result_array();        
+        $perPage=((int)$this->input->post('perPage')>0)?$this->input->post('perPage'):$total;
+        if ($total!=0) {            
+        $totalPage=ceil($total/$perPage)-1;
+        }else{$totalPage=0;}                 
+        $responseOlah = array();
+        foreach ($response as $key => $value) {
+            $responseOlah[$key]['id'] = empty($response[$key]['id_saran_pemanfaatan']) ? "0" : $response[$key]['id_saran_pemanfaatan'];
+            $responseOlah[$key]['name'] = empty($response[$key]['isi_saran_pemanfaatan']) ? "0" : $response[$key]['isi_saran_pemanfaatan'];
+        }      
+        $json_data = array('status'=>$status,'msg'=>$msg,'page' => $start,'totalPage'=>$totalPage, 'recordsFiltered' => ((int)$this->input->post('perPage')>0)?$this->input->post('perPage'):$total, 'totalRecords' => $total, 'data' => $responseOlah);
+       
+
+        $this->response($json_data);    
+    }
+    public function kirim_saran_pemanfaatan_post(){
+        $status = 500;
+        $msg = "";
+        $id_aset =  $this->input->post('id_aset');
+        $id_saran_pemanfaatan = (array) $this->input->post('id_saran_pemanfaatan');
+        if (!empty($id_saran_pemanfaatan)) {
+            $cek_id_aset = $this->function_lib->get_one('id_aset','aset','id_aset='.$this->db->escape($id_aset).'');
+            if (!empty($cek_id_aset)) {
+                $status = 200;
+                $msg = "Berhasil mengirimkan saran";
+                foreach ($id_saran_pemanfaatan as $key => $value) {
+                    $column = array(
+                        "id_aset" => $id_aset,
+                        "id_saran_pemanfaatan" => $value
+                    );
+                    $this->db->insert('saran_pemanfaatan_aset', $column);
+                }
+            }else{
+                    $status = 500;
+                    $msg = "Aset tidak ditemukan";
+            }
+        }else{
+            $status = 500;
+            $msg = "Saran pemanfaatan kosong";
+        }
+        $response = array(
+            "status" => $status,
+            "msg" => $msg
+        );
+        $this->response($response);
+    }
 }
 
 /* End of file Aset.php */
