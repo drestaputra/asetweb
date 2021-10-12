@@ -648,8 +648,10 @@
 
         if ($('.select-row:checked').length > 0) {
             $('.delete-selected-button').removeClass('hidden');
+            $('.export-selected-button').removeClass('hidden');
         } else {
             $('.delete-selected-button').addClass('hidden');
+            $('.export-selected-button').addClass('hidden');
         }
     };
 
@@ -692,6 +694,37 @@
 
             datagrid_object.hideShowDeleteButton();
         });
+        $('.export-selected-button').click(function () {
+
+            
+
+            
+                event.preventDefault();
+                var delete_selected = [];
+                var urlExport = $(".export-selected-button").attr('data-url');
+                var data_to_send;
+                $('.select-row:checked').each(function () {
+                    delete_selected.push($(this).data('id'));
+                });
+
+                data_to_send = {
+                    ids: delete_selected
+                };
+
+                $.ajax({
+                    url: urlExport,
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {id: delete_selected},
+                    success : function(response){
+                        if (response.status == 200) {
+                            window.open(response.url);
+                        }
+                    }
+                })
+                
+
+        });
 
         $('.delete-selected-button').click(function () {
 
@@ -725,8 +758,8 @@
                 }
 
                 /* Fix grocery crud */
-                if ( ! data_to_send.search_text.length ) Object.assign(data_to_send, { search_text: "" });
-                if ( ! data_to_send.search_field.length ) Object.assign(data_to_send, { search_field: "" });
+                if ( (data_to_send.search_text) == null ) Object.assign(data_to_send, { search_text: "" });
+                if (  (data_to_send.search_field) == null ) Object.assign(data_to_send, { search_field: "" });
 
                 $.ajax({
                     beforeSend: function () {

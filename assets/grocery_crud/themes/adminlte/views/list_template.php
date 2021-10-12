@@ -145,6 +145,15 @@ if($success_message !== null){?>
                                     <span class="text-danger"><?php echo $this->l('list_delete')?></span>
                                 </a>
                             </div>
+                            <?php if (isset($set_export_custom) AND $set_export_custom): ?>
+                            <div class="floatL">
+                                <a data-url="<?php echo isset($url_export_custom) ? $url_export_custom : '' ?>" href="javascript:void(0);" title="<?php echo $this->l('list_delete')?>"
+                                   class="hidden btn btn-default export-selected-button">
+                                    <i class="fa fa-file-excel-o text-success"></i>
+                                    <span class="text-success">Export</span>
+                                </a>
+                            </div>
+                            <?php endif ?>
                             <div class="floatR l5">
                                 <a href="javascript:void(0);" class="btn btn-default gc-refresh">
                                     <i class="fa fa-refresh"></i>

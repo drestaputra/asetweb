@@ -1659,6 +1659,9 @@ class grocery_CRUD_Layout extends grocery_CRUD_Model_Driver
 		$data->unset_read			= $this->unset_read;
 		$data->unset_delete			= $this->unset_delete;
 		$data->unset_export			= $this->unset_export;
+		$data->set_export_custom	= $this->set_export_custom;
+		$data->url_export_custom    = $this->url_export_custom;
+		
 		$data->unset_print			= $this->unset_print;
 
 		$default_per_page = $this->config->default_per_page;
@@ -3632,6 +3635,8 @@ class Grocery_CRUD extends grocery_CRUD_States
 	protected $primary_keys			= array();
 	protected $crud_url_path		= null;
 	protected $list_url_path		= null;
+	protected $set_export_custom	= false;
+	protected $url_export_custom= '';
 
 	/* The unsetters */
 	protected $unset_texteditor		= array();
@@ -3918,6 +3923,18 @@ class Grocery_CRUD extends grocery_CRUD_States
 	public function unset_export()
 	{
 		$this->unset_export = true;
+
+		return $this;
+	}
+	public function set_export_custom()
+	{
+		$this->set_export_custom = true;
+
+		return $this;
+	}
+	public function set_url_export_custom($url = "")
+	{
+		$this->url_export_custom = $url;
 
 		return $this;
 	}

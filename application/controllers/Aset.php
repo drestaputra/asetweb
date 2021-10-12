@@ -37,6 +37,8 @@ class Aset extends CI_Controller {
         // $crud->field_type('jumlah_modal_usaha','integer');
         // $crud->field_type('tgl_modal_usaha','datetime');
 
+        $crud->set_export_custom();
+        $crud->set_url_export_custom(base_url('aset/export_custom'));
 
 
         $crud->display_as('id_opd_aset','OPD')
@@ -345,6 +347,89 @@ class Aset extends CI_Controller {
     } 
     public function set_number_format_with_rp($value, $row){
         return "Rp. ".number_format($value,'2',',','.');
+    }
+    public function export_custom(){
+        header('Content-Type application/json');
+        $id = $this->input->post('id');
+        // use PhpOffice\PhpSpreadsheet\Spreadsheet;
+        // use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+        $stringIdAset = implode("','",$id);
+         
+        
+        $spreadsheet = new PhpOffice\PhpSpreadsheet\Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $sheet->setCellValue('A1', 'OPD');
+        $sheet->setCellValue('B1', 'Nama Aset');
+        $sheet->setCellValue('C1', 'Galeri');
+        $sheet->setCellValue('D1', 'Pemanfaatan');
+        $sheet->setCellValue('E1', 'Saran Pemanfaatan');
+        $sheet->setCellValue('F1', 'Kode barang');
+        $sheet->setCellValue('G1', 'Register');
+        $sheet->setCellValue('H1', 'Kecamatan');
+        $sheet->setCellValue('I1', 'Desa');
+        $sheet->setCellValue('J1', 'Jenis Hak');
+        $sheet->setCellValue('K1', 'Tanggal sertifikat');
+        $sheet->setCellValue('L1', 'Nomor sertifikat');
+        $sheet->setCellValue('M1', 'Penggunaan');
+        $sheet->setCellValue('N1', 'Asal Perolehan');
+        $sheet->setCellValue('O1', 'Harga perolehan');
+        $sheet->setCellValue('P1', 'Keterangan');
+        $sheet->setCellValue('Q1', 'Latitude');
+        $sheet->setCellValue('R1', 'Longitude');
+        $sheet->setCellValue('S1', 'Status aset');
+        $sheet->setCellValue('T1', 'Status verifikasi');
+         
+        // SELECT `aset`.*, j7dd2b894.nama AS s7dd2b894, j0214e037.nama AS s0214e037, jea67d6ad.id_opd_admin, (SELECT label_opd FROM opd where id_opd=id_opd_admin) AS sea67d6ad FROM `aset` LEFT JOIN `kecamatan` as `j7dd2b894` ON `j7dd2b894`.`id` = `aset`.`id_kecamatan` LEFT JOIN `desa` as `j0214e037` ON `j0214e037`.`id` = `aset`.`id_desa` LEFT JOIN `admin` as `jea67d6ad` ON `jea67d6ad`.`id_admin` = `aset`.`id_opd_aset` WHERE `aset`.`status_aset` != 'deleted' AND `galeri` LIKE '%1%' ESCAPE '!' ORDER BY `sea67d6ad` DESC 
+
+        $query = $this->db->query("SELECT `aset`.*, j7dd2b894.nama AS s7dd2b894, j0214e037.nama AS s0214e037, jea67d6ad.id_opd_admin, (SELECT label_opd FROM opd where id_opd=id_opd_admin) AS sea67d6ad FROM `aset` LEFT JOIN `kecamatan` as `j7dd2b894` ON `j7dd2b894`.`id` = `aset`.`id_kecamatan` LEFT JOIN `desa` as `j0214e037` ON `j0214e037`.`id` = `aset`.`id_desa` LEFT JOIN `admin` as `jea67d6ad` ON `jea67d6ad`.`id_admin` = `aset`.`id_opd_aset` WHERE `aset`.`status_aset` != 'deleted' AND id_aset IN ('".$stringIdAset."') ORDER BY `sea67d6ad` DESC ");
+         $data = $query->result_array();
+        $i = 2;
+        $no = 1;
+        foreach ($data as $key => $value) {
+            $sheet->setCellValue('A'.$i, isset($value['sea67d6ad']) ? $value['sea67d6ad'] : "");
+            $sheet->setCellValue('B'.$i, isset($value['nama_aset']) ? $value['nama_aset'] : "");
+            $sheet->setCellValue('C'.$i, "");
+            $sheet->setCellValue('D'.$i, "");   
+            $sheet->setCellValue('E'.$i, "");   
+            $sheet->setCellValue('F'.$i, isset($value['kode_barang']) ? $value['kode_barang'] : "");   
+            $sheet->setCellValue('G'.$i, isset($value['register']) ? $value['register'] : "");   
+            $sheet->setCellValue('H'.$i, isset($value['s7dd2b894']) ? $value['s7dd2b894'] : "");   
+            $sheet->setCellValue('I'.$i, isset($value['s0214e037']) ? $value['s0214e037'] : "");   
+            $sheet->setCellValue('J'.$i, isset($value['jenis_hak']) ? $value['jenis_hak'] : "");   
+            $sheet->setCellValue('K'.$i, isset($value['tanggal_sertifikat']) ? $value['tanggal_sertifikat'] : "");   
+            $sheet->setCellValue('L'.$i, isset($value['nomor_sertifikat']) ? $value['nomor_sertifikat'] : "");   
+            $sheet->setCellValue('M'.$i, isset($value['penggungaan']) ? $value['penggungaan'] : "");   
+            $sheet->setCellValue('N'.$i, isset($value['asal_perolehan']) ? $value['asal_perolehan'] : "");   
+            $sheet->setCellValue('O'.$i, isset($value['harga_perolehan']) ? $value['harga_perolehan'] : "");   
+            $sheet->setCellValue('P'.$i, isset($value['keterangan']) ? $value['keterangan'] : "");   
+            $sheet->setCellValue('Q'.$i, isset($value['latitude']) ? $value['latitude'] : "");   
+            $sheet->setCellValue('R'.$i, isset($value['longitude']) ? $value['longitude'] : "");   
+            $sheet->setCellValue('S'.$i, isset($value['status_aset']) ? $value['status_aset'] : "");   
+            $sheet->setCellValue('T'.$i, isset($value['status_verifikasi_aset']) ? $value['status_verifikasi_aset'] : "");   
+            $i++;
+        }
+         
+        $styleArray = [
+                    'borders' => [
+                        'allBorders' => [
+                            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                        ],
+                    ],
+                ];
+        $i = $i - 1;
+        $sheet->getStyle('A1:T'.$i)->applyFromArray($styleArray);
+         
+        $writer = new PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+        $lokasi = "/assets/excel/export.xlsx";
+        $writer->save('./'.$lokasi);
+        $response = array(
+            "status" => 200,
+            "msg" => "OK",
+            "url" => base_url($lokasi)
+        );
+        echo(json_encode($response));
+
     }
      
     public function import(){

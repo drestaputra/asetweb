@@ -304,6 +304,7 @@
 		
 		<script type="text/javascript">
 		<?php if ($state_data == "list" OR $state_data == "success"): ?>
+			$(".searchable-input[name='galeri']").remove();
 			$(".searchable-input[name='pemanfaatan']").remove();
 			$(".searchable-input[name='saran_pemanfaatan']").remove();
 		<?php endif ?>
