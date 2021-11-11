@@ -92,7 +92,7 @@ class Maset extends CI_Model {
 	        	$insertData[$key]["harga_perolehan"] = floatval($harga_perolehan);
 	        	$insertData[$key]["keterangan"] = isset($value['N']) ? $value['N'] : "";
 	        	// data default
-	        	$insertData[$key]["status_aset"] = "aktif";
+	        	$insertData[$key]["status_aset"] = "idle";
 	        	$insertData[$key]["status_verifikasi_aset"] = "sedang_diverifikasi";
 	        	$insertData[$key]["created_by_id"] = $id_user;
 	        	$insertData[$key]["created_by"] = "import_".$level;
@@ -113,17 +113,24 @@ class Maset extends CI_Model {
 		$id_opd = isset($data['id_opd']) ? $data['id_opd'] : "";
 		$id_kecamatan = isset($data['id_kecamatan']) ? $data['id_kecamatan'] : "";
 		$id_desa = isset($data['id_desa']) ? $data['id_desa'] : "";
-		$this->db->where('id_opd_aset', $id_opd);
+		if (!empty($id_opd)) {
+			$this->db->where('id_opd_aset', $id_opd);
+		}if (!empty($nama_aset)) {
+			$this->db->where('nama_aset LIKE "%'.$this->db->escape_str($nama_aset).'%" OR kode_barang LIKE "%'.$this->db->escape_str($nama_aset).'%"');
+		}
 		$this->db->where('status_aset!="deleted"');
-		$this->db->where('nama_aset LIKE "%'.$this->db->escape_str($nama_aset).'%" OR kode_barang LIKE "%'.$this->db->escape_str($nama_aset).'%"');
-		$this->db->where('id_kecamatan', $id_kecamatan);
-		$this->db->where('id_desa', $id_desa);
+		if (!empty($id_kecamatan)) {
+			$this->db->where('id_kecamatan', $id_kecamatan);
+		}
+		if (!empty($id_desa)) {
+			$this->db->where('id_desa', $id_desa);
+		}
 		$this->db->select('id_aset,nama_aset,kode_barang,register,luas_tanah,alamat,jenis_hak,tanggal_sertifikat,nomor_sertifikat,penggunaan,keterangan,latitude,longitude,status_aset,status_verifikasi_aset');
 		$query = $this->db->get('aset',500,0);
 		$data = $query->result_array();
 		return $data;
 	}
-	function count_aset_by_status($status = "aktif", $where =""){
+	function count_aset_by_status($status = "idle", $where =""){
 		if (!empty($where) AND trim($where) != "") {
 			$this->db->where($where);
 		}

@@ -90,7 +90,7 @@ class Aset extends CI_Controller {
             $crud->unset_delete();
             $crud->where('(id_opd_admin = '.$this->db->escape($id_opd_admin).' OR id_opd_aset="0")');
         }else if($level == "super_admin"){
-            $crud->set_relation('id_opd_aset','admin','id_opd_admin,(SELECT label_opd FROM opd where id_opd=id_opd_admin)', 'status!="deleted" ');
+            $crud->set_relation('id_opd_aset','opd','label_opd', 'status_opd!="deleted" ');
         }else if($level == "admin"){
             $id_admin = $id_user;
             $id_opd_admin = $this->function_lib->get_one('id_opd_admin', 'admin','id_admin='.$this->db->escape($id_admin).'');
@@ -111,6 +111,11 @@ class Aset extends CI_Controller {
         $crud->unset_texteditor(array('penggunaan','full_text'));
         $crud->unset_texteditor(array('asal_perolehan','full_text'));
         $crud->unset_texteditor(array('asal_perolehan','full_text'));
+
+        $crud->change_field_type('latitude', 'integer');
+        $crud->change_field_type('longitude', 'integer');
+        $crud->change_field_type('tahun_perolehan', 'integer');
+        $crud->change_field_type('harga_perolehan', 'integer');
 
         $crud->required_fields('status_aset'); 
 
@@ -192,7 +197,7 @@ class Aset extends CI_Controller {
         return '<a class="btn btn-info" href="'.base_url("foto_aset/index/".$row->id_aset).'" ><i class="fa fa-eye"></i> Lihat</a>';
     }
     public function getPemanfaatanByIdAset($value, $row){                      
-        return "<b>".$this->Mpemanfaatan_aset->getPemanfaatanByIdAset($row->id_aset)."</b>";
+        return "<b>".$this->Mpemanfaatan_aset->getPemanfaatanByIdAset($row->id_aset)."</b>"."<br><a class='btn btn-info btn-sm' href='".base_url('pemanfaatan/index?id_aset='.$row->id_aset.'')."'><i class='fa fa-eye'></i> LIHAT</a>";
         // return '<a class="btn btn-info" href="'.base_url("foto_aset/index/".$row->id_aset).'" ><i class="fa fa-eye"></i> Lihat</a>';
     }
     public function getSaranPemanfaatanByIdAset($value, $row){            
@@ -225,6 +230,8 @@ class Aset extends CI_Controller {
         // $crud->field_type('jumlah_modal_usaha','integer');
         // $crud->field_type('tgl_modal_usaha','datetime');
 
+        $crud->set_export_custom();
+        $crud->set_url_export_custom(base_url('aset/export_custom'));
 
 
         $crud->display_as('id_opd_aset','OPD')
@@ -276,7 +283,7 @@ class Aset extends CI_Controller {
             $crud->unset_delete();
             $crud->where('(id_opd_admin = '.$this->db->escape($id_opd_admin).' OR id_opd_aset="0")');
         }else if($level == "super_admin"){
-            $crud->set_relation('id_opd_aset','admin','id_opd_admin,(SELECT label_opd FROM opd where id_opd=id_opd_admin)', 'status!="deleted" ');
+            $crud->set_relation('id_opd_aset','opd','label_opd', 'status_opd!="deleted" ');
         }else if($level == "admin"){
             $id_admin = $id_user;
             $id_opd_admin = $this->function_lib->get_one('id_opd_admin', 'admin','id_admin='.$this->db->escape($id_admin).'');
@@ -301,6 +308,10 @@ class Aset extends CI_Controller {
         $crud->required_fields('status_aset'); 
 
         $crud->change_field_type('status_aset', 'dropdown', array('idle' => 'Idle','non_idle' => 'Non Idle'));
+        $crud->change_field_type('latitude', 'integer');
+        $crud->change_field_type('longitude', 'integer');
+        $crud->change_field_type('tahun_perolehan', 'integer');
+        $crud->change_field_type('harga_perolehan', 'integer');
         $crud->change_field_type('status_verifikasi_aset', 'dropdown', array('valid' => 'Valid','tidak_valid' => 'Tidak Valid', 'sedang_diverifikasi' => 'Sedang Diverifikasi'));
 
         $data = $crud->render();

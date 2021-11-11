@@ -305,72 +305,75 @@
 		<script type="text/javascript">
 		<?php if ($state_data == "list" OR $state_data == "success"): ?>
 			$(".searchable-input[name='galeri']").remove();
+			$("th[data-order-by='galeri']").attr("class","");
 			$(".searchable-input[name='pemanfaatan']").remove();
+			$("th[data-order-by='pemanfaatan']").attr("class","");
 			$(".searchable-input[name='saran_pemanfaatan']").remove();
+			$("th[data-order-by='saran_pemanfaatan']").attr("class","");
 		<?php endif ?>
 		<?php if ($state_data == "add" OR $state_data == "edit"): ?>
 			
-			function initOpsiPemanfaatan(){
-				var opsiPemanfaatan = 
-							`<div class="form-group">
-								<label class="col-sm-2 control-label">Pemanfaatan</label>
-								<div class="col-sm-5">
-									<select name="pemanfaatan[]" class="form-control select2-pemanfaatan" multiple="multiple"></select>
-								</div>
-								<div class="col-sm-5">
-									<button type="button" class="btn btn-info " data-toggle="modal" data-backdrop="false" data-target="#modalPemanfaatan"><i class="fa fa-plus"></i> Tambah Pemanfaatan Baru</button>
-								</div>
-							</div>`;
-				$(".status_verifikasi_aset_form_group").after(opsiPemanfaatan);
-				$(".select2-pemanfaatan").select2();
+			// function initOpsiPemanfaatan(){
+			// 	var opsiPemanfaatan = 
+			// 				`<div class="form-group">
+			// 					<label class="col-sm-2 control-label">Pemanfaatan</label>
+			// 					<div class="col-sm-5">
+			// 						<select name="pemanfaatan[]" class="form-control select2-pemanfaatan" multiple="multiple"></select>
+			// 					</div>
+			// 					<div class="col-sm-5">
+			// 						<button type="button" class="btn btn-info " data-toggle="modal" data-backdrop="false" data-target="#modalPemanfaatan"><i class="fa fa-plus"></i> Tambah Pemanfaatan Baru</button>
+			// 					</div>
+			// 				</div>`;
+			// 	$(".status_verifikasi_aset_form_group").after(opsiPemanfaatan);
+			// 	$(".select2-pemanfaatan").select2();
 						
-			}
-			function initDataPemanfaatan(){
-				$.ajax({
-					url: '<?php echo base_url('pemanfaatan/get_all_pemanfaatan') ?>',
-					type: 'GET',
-					dataType: 'JSON',
-					success : function(response){
+			// }
+			// function initDataPemanfaatan(){
+			// 	$.ajax({
+			// 		url: '<?php echo base_url('pemanfaatan/get_all_pemanfaatan') ?>',
+			// 		type: 'GET',
+			// 		dataType: 'JSON',
+			// 		success : function(response){
 
-						$('.select2-pemanfaatan').empty().trigger("change");
-						var newOption = [];            
+			// 			$('.select2-pemanfaatan').empty().trigger("change");
+			// 			var newOption = [];            
 
-						$.each(response, function(index, val) {   
-					        newOption.push(`<option value="`+ val.id_pemanfaatan +`">`+ val.isi_pemanfaatan +`</option>`);
-						});
-						var selectedOption = [];
-						<?php foreach ($selectedDataPemanfaatan as $key => $value): ?>
-							selectedOption.push("<?php echo $value['id_pemanfaatan'] ?>");
-						<?php endforeach ?>
+			// 			$.each(response, function(index, val) {   
+			// 		        newOption.push(`<option value="`+ val.id_pemanfaatan +`">`+ val.isi_pemanfaatan +`</option>`);
+			// 			});
+			// 			var selectedOption = [];
+			// 			<?php foreach ($selectedDataPemanfaatan as $key => $value): ?>
+			// 				selectedOption.push("<?php echo $value['id_pemanfaatan'] ?>");
+			// 			<?php endforeach ?>
 						
-				        $('.select2-pemanfaatan').select2({
-				            minimumInputLength: 0,                        
-				        }).append(newOption);
-		        		$('.select2-pemanfaatan').val(selectedOption); // Select the option with a value of '1'
-						$('.select2-pemanfaatan').trigger('change'); // Notify any JS components that the value changed
-					}
-				})		
-			}
-			initOpsiPemanfaatan();
-			initDataPemanfaatan();
-			$("#tambahPemanfaatan").click(function(event) {
-				event.preventDefault();
-				var isi_pemanfaatan = $("[name='isi_pemanfaatan']").val();
-				$.ajax({
-					url: '<?php echo base_url('pemanfaatan/tambah_baru') ?>',
-					type: 'POST',
-					data: {isi_pemanfaatan: isi_pemanfaatan},
-					dataType: 'json',
-					success : function(response){
-						if (response.status == 200) {
-							initDataPemanfaatan();
-							$('#modalPemanfaatan').modal('hide');
-						}else{
-							alert(response.msg);
-						}
-					}
-				})
-			});
+			// 	        $('.select2-pemanfaatan').select2({
+			// 	            minimumInputLength: 0,                        
+			// 	        }).append(newOption);
+		 //        		$('.select2-pemanfaatan').val(selectedOption); // Select the option with a value of '1'
+			// 			$('.select2-pemanfaatan').trigger('change'); // Notify any JS components that the value changed
+			// 		}
+			// 	})		
+			// }
+			// initOpsiPemanfaatan();
+			// initDataPemanfaatan();
+			// $("#tambahPemanfaatan").click(function(event) {
+			// 	event.preventDefault();
+			// 	var isi_pemanfaatan = $("[name='isi_pemanfaatan']").val();
+			// 	$.ajax({
+			// 		url: '<?php echo base_url('pemanfaatan/tambah_baru') ?>',
+			// 		type: 'POST',
+			// 		data: {isi_pemanfaatan: isi_pemanfaatan},
+			// 		dataType: 'json',
+			// 		success : function(response){
+			// 			if (response.status == 200) {
+			// 				initDataPemanfaatan();
+			// 				$('#modalPemanfaatan').modal('hide');
+			// 			}else{
+			// 				alert(response.msg);
+			// 			}
+			// 		}
+			// 	})
+			// });
 			$("[name='status_aset']").change(function(event) {
 				cekStatusAset();
 			});

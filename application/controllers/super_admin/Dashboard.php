@@ -16,8 +16,8 @@ class Dashboard extends CI_Controller {
 		$data = array();
 		$data['dataOpd'] = $this->Mopd->getAllOpd();
 		$data['dataKecamatan'] = $this->Malamat->getAllKecamatan("3305");
-		$data['count_aset_aktif'] = $this->Maset->count_aset_by_status("aktif");
-		$data['count_aset_non_aktif'] = $this->Maset->count_aset_by_status("non_aktif");
+		$data['count_aset_idle'] = $this->Maset->count_aset_by_status("non_idle");
+		$data['count_aset_non_idle'] = $this->Maset->count_aset_by_status("idle");
 
 		$data['count_aset_valid'] = $this->Maset->count_aset_by_status_verifikasi("valid");
 		$data['count_aset_tidak_valid'] = $this->Maset->count_aset_by_status_verifikasi("tidak_valid");

@@ -51,6 +51,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 */
 $route['default_controller'] = 'welcome';
 $route['lupass'] = 'welcome/lupass';
+$route['login'] = 'welcome/login';
 $route['super_admin']='super_admin/dashboard';
 $route['admin']='admin/dashboard';
 $route['koordinator']='koordinator/dashboard';

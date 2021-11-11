@@ -116,6 +116,14 @@
 											<span>Artikel</span>
 										</a>
 									</li>	
+									<li <?php if (isset($url1) AND trim($url1)!="" AND $url1=="berkas"): ?>
+										 class="nav-active"
+									<?php endif ?>>
+										<a href="<?php echo base_url('berkas/index'); ?>">
+											<i class="fa fa-file" aria-hidden="true"></i>
+											<span>Berkas</span>
+										</a>
+									</li>	
 									<li <?php if (isset($url1) AND trim($url1)!="" AND $url1=="slider"): ?>
 										 class="nav-active"
 									<?php endif ?>>

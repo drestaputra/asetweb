@@ -333,12 +333,12 @@
 		<script >
 			const dataStatus = {
 			  labels: [
-			    'Aktif',
-			    'Non Aktif',
+			    'Idle',
+			    'Non Idle',
 			  ],
 			  datasets: [{
 			    label: 'Status Aset',
-			    data: [<?php echo isset($count_aset_aktif) ? $count_aset_aktif : 0; ?>, <?php echo isset($count_aset_non_aktif) ? $count_aset_non_aktif : 0; ?>],
+			    data: [<?php echo isset($count_aset_idle) ? $count_aset_idle : 0; ?>, <?php echo isset($count_aset_non_idle) ? $count_aset_non_idle : 0; ?>],
 			    backgroundColor: [
 			      'rgb(54, 162, 235)',
 			      'rgb(255, 99, 132)',

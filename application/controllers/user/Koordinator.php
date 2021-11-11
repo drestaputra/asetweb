@@ -47,7 +47,7 @@ class koordinator extends CI_Controller {
 	}
 	public function logout(){
 		$this->session->sess_destroy('koordinator');
-		redirect(base_url('koordinator/login'));
+		redirect(base_url());
 	}
 	public function profil(){
 		$this->load->model('Mkoordinator');

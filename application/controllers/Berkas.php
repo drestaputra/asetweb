@@ -25,6 +25,7 @@ class Berkas extends CI_Controller {
         $crud->set_table('berkas');        
         $crud->set_subject('Data Berkas');
         $crud->set_language('indonesian');
+        $crud->where('status_berkas!="deleted"');
 
        
         $crud->columns('nama_berkas','deskripsi_berkas','berkas','status_berkas');                 
@@ -34,7 +35,7 @@ class Berkas extends CI_Controller {
              ->display_as('berkas','berkas')             
              ->display_as('status_berkas','STATUS') ;                                      
 
-        $crud->change_field_type('is_notif', 'dropdown', array('0' => 'Tidak','1' => 'Ya'));
+        // $crud->change_field_type('is_notif', 'dropdown', array('0' => 'Tidak','1' => 'Ya'));
         $crud->set_field_upload('berkas','api/assets/berkas');        
                
         $crud->required_fields('nama_berkas','berkas','status_berkas');                
@@ -54,7 +55,7 @@ class Berkas extends CI_Controller {
         $id_user = isset($user_sess['id_user']) ? $user_sess['id_user'] : "";
         
         $columnUpdate = array(
-            'status_berkas' => 'non_aktif'
+            'status_berkas' => 'deleted'
         );
         $this->db->where('id_berkas', $primary_key);
         return $this->db->update('berkas', $columnUpdate);       

@@ -131,6 +131,12 @@
 		
 		<!-- Theme Initialization Files -->
 		<script src="<?php echo base_url(); ?>assets/javascripts/theme.init.js"></script>		
+		<script type="text/javascript">
+			$(".searchable-input[name='OPD']").remove();
+			$("th[data-order-by='OPD']").attr("class","");
+			$(".searchable-input[name='kode_barang']").remove();
+			$("th[data-order-by='kode_barang']").attr("class","");
+		</script>
 		<!-- flexigrid -->		
 		
 

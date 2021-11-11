@@ -47,7 +47,7 @@ class admin extends CI_Controller {
 	}
 	public function logout(){
 		$this->session->sess_destroy('admin');
-		redirect(base_url('admin/login'));
+		redirect(base_url());
 	}
 	public function profil(){
 		$this->load->model('Madmin');

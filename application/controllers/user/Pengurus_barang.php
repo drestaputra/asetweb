@@ -47,7 +47,7 @@ class pengurus_barang extends CI_Controller {
     }
     public function logout(){
         $this->session->sess_destroy('pengurus_barang');
-        redirect(base_url('pengurus_barang/login'));
+        redirect(base_url());
     }
     public function profil(){
         $this->load->model('Mpengurus_barang');

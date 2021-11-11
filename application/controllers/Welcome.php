@@ -41,7 +41,10 @@ class Welcome extends CI_Controller {
 		}else if($level == "pengurus_barang"){
 			redirect('pengurus_barang/dashboard','refresh');			
 		}else{
-			redirect('admin/login','refresh');
+			redirect('login','refresh');
 		}
+	}
+	public function login(){
+		$this->load->view('choose_login', null, FALSE);
 	}
 }

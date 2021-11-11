@@ -18,10 +18,10 @@ class Mpemanfaatan_aset extends CI_Model {
 		}
 	}
 	public function getPemanfaatanByIdAset($id_aset){
-		// SELECT GROUP_CONCAT((SELECT isi_pemanfaatan FROM pemanfaatan WHERE id_pemanfaatan=pemanfaatan_aset.id_pemanfaatan)) FROM pemanfaatan_aset
-		$this->db->select('GROUP_CONCAT((SELECT isi_pemanfaatan FROM pemanfaatan WHERE id_pemanfaatan=pemanfaatan_aset.id_pemanfaatan)) as pemanfaatan');
-		$this->db->where('id_aset', $id_aset);
-		$query = $this->db->get('pemanfaatan_aset');
+		// SELECT GROUP_CONCAT(penggunaan) FROM `pemanfaatan` WHERE `id_aset_pemanfaatan` = '2'
+		$this->db->select('GROUP_CONCAT(penggunaan) as pemanfaatan');
+		$this->db->where('id_aset_pemanfaatan', $id_aset);
+		$query = $this->db->get('pemanfaatan');
 		$dataPemanfaatan = $query->row_array();
 		$pemanfaatan = isset($dataPemanfaatan['pemanfaatan']) ? $dataPemanfaatan['pemanfaatan'] : "";
 		

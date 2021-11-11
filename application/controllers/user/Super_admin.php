@@ -46,7 +46,7 @@ class super_admin extends CI_Controller {
 	}
 	public function logout(){
 		$this->session->sess_destroy('super_admin');
-		redirect(base_url('super_admin/login'));
+		redirect(base_url());
 	}
 	public function profil(){
 		$this->load->model('Msuper_admin');

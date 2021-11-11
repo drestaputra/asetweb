@@ -371,3 +371,29 @@ iframe {
 }
 
 
+
+
+  .card-login{
+    margin-top: 20px;
+    padding: 20px;
+      justify-content: center;
+      align-items: center;
+      align-content: center;
+      background: linear-gradient(45deg, #c9c8c8, #dddddd);
+    border-radius: 20px;
+      box-shadow: #959595 0px 0px 7px 0px;      
+      transition: all 0.5s ease-out;
+    height: 200px;
+  }
+  .card-login:hover{
+        background: #FFFF;
+        box-shadow: #959595 0px 0px 14px 0px;
+  }
+  .card-login h3{
+    margin-top: 10px;
+    font-size: 13px;
+    font-weight: 700;
+  }
+  .items-card{
+    padding: 20px;
+  }

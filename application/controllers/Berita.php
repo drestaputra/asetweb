@@ -25,6 +25,8 @@ class Berita extends CI_Controller {
         $crud->set_subject('Data Informasi Program');
         $crud->set_language('indonesian');
 
+        $crud->where("status_berita != 'deleted'");
+
        
         $crud->columns('judul_berita','deskripsi_berita','foto_berita','tgl_berita','status_berita');                 
         // $crud->columns('judul_berita','deskripsi_berita','foto_berita','tgl_berita','status_berita','is_notif');                 
@@ -80,7 +82,7 @@ class Berita extends CI_Controller {
         $id_user = isset($user_sess['id_user']) ? $user_sess['id_user'] : "";
         
         $columnUpdate = array(
-            'status_berita' => 'non_aktif'
+            'status_berita' => 'deleted'
         );
         $this->db->where('id_berita', $primary_key);
         return $this->db->update('berita', $columnUpdate);       

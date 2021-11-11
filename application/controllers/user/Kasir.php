@@ -46,7 +46,7 @@ class kasir extends CI_Controller {
 	}
 	public function logout(){
 		$this->session->sess_destroy('kasir');
-		redirect(base_url('kasir/login'));
+		redirect(base_url());
 	}
 	public function profil(){
 		$this->load->model('Mkasir');

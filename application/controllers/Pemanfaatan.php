@@ -21,16 +21,35 @@ class Pemanfaatan extends CI_Controller {
         $user_sess = $this->function_lib->get_user_level();
         $level = isset($user_sess['level']) ? $user_sess['level'] : "";
         $id_user = isset($user_sess['id_user']) ? $user_sess['id_user'] : "";
+        $id_aset_pemanfaatan = (isset($_GET['id_aset']) AND !empty($_GET['id_aset'])) ? $_GET['id_aset'] : "";
+        if (!empty($id_aset_pemanfaatan)) {
+            $crud->where('id_aset_pemanfaatan',$id_aset_pemanfaatan);
+        }
         
         $crud->set_theme('adminlte');
         $crud->set_table('pemanfaatan');        
         $crud->set_subject('Data pemanfaatan');
 		$crud->set_language('indonesian');
         $crud->where("status_pemanfaatan != 'deleted'");
+        $crud->set_relation('id_aset_pemanfaatan','aset','nama_aset', 'status_aset!="deleted"');
 
-        $crud->columns('isi_pemanfaatan');
-        $crud->unset_fields('status_pemanfaatan');
-        $crud->unique_fields(array('isi_pemanfaatan'));
+
+        $crud->columns('id_aset_pemanfaatan','OPD','kode_barang','no_registrasi','penggunaan','alamat_pemanfaatan_aset','luas_disewakan','jenis','no_perjanjian_sewa','tanggal','jangka_waktu_awal','jangka_waktu_akhir','nilai_sewa_total');
+
+        $crud->display_as('id_aset_pemanfaatan','Nama Aset')
+             ->display_as('luas_disewakan','Luas Disewakan (m)')
+             ->display_as('email','Email')
+             ->display_as('kode_barang','Kode Barang')
+             ->display_as('status','STATUS') ;                                      
+        $crud->unset_texteditor(array('alamat_pemanfaatan_aset','full_text'));
+        // $crud->field_type('id_aset_pemanfaatan', 'integer');
+        $crud->callback_column('OPD',array($this,'getOpd'));
+        $crud->callback_column('kode_barang',array($this,'getKodeBarang'));
+        $crud->field_type('luas_disewakan', 'integer');
+        $crud->field_type('tanggal', 'date');
+        $crud->field_type('jangka_waktu_awal', 'date');
+        $crud->field_type('jangka_waktu_akhir', 'date');
+        $crud->field_type('nilai_sewa_total', 'integer');
 
         $crud->callback_delete(array($this,'delete_data'));
 
@@ -44,6 +63,14 @@ class Pemanfaatan extends CI_Controller {
         $this->load->view('pemanfaatan/index', $data, FALSE);
 
     }   
+    function getOpd($value, $row){
+        $label = $this->function_lib->get_one('label_opd','opd','id_opd IN (SELECT id_opd_aset FROM aset where id_aset='.$this->db->escape($row->id_aset_pemanfaatan).')');
+        return $label;
+    }
+    function getKodeBarang($value, $row){
+        $label = $this->function_lib->get_one('kode_barang','aset','id_aset='.$this->db->escape($row->id_aset_pemanfaatan).'');
+        return $label;
+    }
     function get_all_pemanfaatan(){
         header('Content-Type: application/json');
         $this->db->where('status_pemanfaatan != "deleted"');
